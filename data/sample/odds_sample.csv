@@ -1,0 +1,6 @@
+match_id,source,market,selection,decimal_odd,source_type
+GS_A_001,api_paddypower,1x2,team_a,1.36,api
+GS_A_001,api_paddypower,1x2,team_b,8.5,api
+GS_A_001,api_paddypower,1x2,draw,4.33,api
+GS_A_001,api_skybet,1x2,team_a,1.36,api
+GS_A_001,api_skybet,1x2,team_b,8.5,api

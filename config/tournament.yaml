@@ -1,0 +1,204 @@
+# Copa do Mundo 2026 — Estrutura do Torneio
+# 48 seleções, 12 grupos de 4, formato expandido
+
+tournament:
+  name: "FIFA World Cup 2026"
+  host_countries: ["United States", "Mexico", "Canada"]
+  start_date: "2026-06-11"
+  end_date: "2026-07-19"
+  neutral_venue: true  # Todos os jogos são considerados campo neutro
+
+groups:
+  A: ["Mexico", "South Africa", "South Korea", "Czechia"]
+  B: ["Canada", "Bosnia and Herzegovina", "Qatar", "Switzerland"]
+  C: ["Brazil", "Morocco", "Haiti", "Scotland"]
+  D: ["United States", "Paraguay", "Australia", "Türkiye"]
+  E: ["Germany", "Curaçao", "Ivory Coast", "Ecuador"]
+  F: ["Netherlands", "Japan", "Sweden", "Tunisia"]
+  G: ["Belgium", "Egypt", "Iran", "New Zealand"]
+  H: ["Spain", "Cape Verde", "Saudi Arabia", "Uruguay"]
+  I: ["France", "Senegal", "Iraq", "Norway"]
+  J: ["Argentina", "Algeria", "Austria", "Jordan"]
+  K: ["Portugal", "DR Congo", "Uzbekistan", "Colombia"]
+  L: ["England", "Croatia", "Ghana", "Panama"]
+
+# Regras de classificação na fase de grupos
+group_stage:
+  matches_per_team: 3
+  advance_top: 2          # 1º e 2º de cada grupo avançam directamente
+  advance_best_third: 8   # 8 melhores 3ºs colocados avançam
+  total_advance: 32       # 24 (top2) + 8 (best 3rd) = 32
+
+  # Critérios de desempate (em ordem)
+  tiebreaker:
+    - points              # 3 pts vitória, 1 empate, 0 derrota
+    - goal_difference
+    - goals_scored
+    - head_to_head_points
+    - head_to_head_goal_difference
+    - head_to_head_goals_scored
+    - fair_play           # cartões
+    - drawing_of_lots
+
+# Estrutura do mata-mata (Round of 32)
+# Baseado no formato FIFA 2026
+knockout:
+  round_of_32:
+    # Chave 1 (lado esquerdo)
+    M49: ["1A", "3C/D/E"]
+    M50: ["2C", "2D"]
+    M51: ["1E", "3A/B/F"]
+    M52: ["2A", "2B"]
+    M53: ["1C", "3A/B/D"]
+    M54: ["2E", "2F"]
+    M55: ["1G", "3E/F/G"]
+    M56: ["2I", "2J"]
+    # Chave 2 (lado direito)
+    M57: ["1B", "3C/D/F"]
+    M58: ["2G", "2H"]
+    M59: ["1D", "3B/E/F"]
+    M60: ["2K", "2L"]
+    M61: ["1F", "3A/D/E"]
+    M62: ["2I", "2J"]  # Note: bracket TBD by FIFA
+    M63: ["1H", "3G/H/I"]
+    M64: ["2K", "2L"]
+
+  # Etapas seguintes
+  round_of_16: 8      # 8 jogos
+  quarterfinals: 4    # 4 jogos
+  semifinals: 2       # 2 jogos
+  third_place: 1      # 1 jogo
+  final: 1            # 1 jogo
+
+# Venues e seus factores
+venues:
+  # México
+  mexico_city:
+    name: "Estadio Azteca"
+    city: "Mexico City"
+    country: "Mexico"
+    altitude_m: 2240
+    avg_temp_june_c: 20
+    humidity_pct: 55
+
+  guadalajara:
+    name: "Estadio Akron"
+    city: "Guadalajara"
+    country: "Mexico"
+    altitude_m: 1566
+    avg_temp_june_c: 25
+    humidity_pct: 60
+
+  monterrey:
+    name: "Estadio BBVA"
+    city: "Monterrey"
+    country: "Mexico"
+    altitude_m: 540
+    avg_temp_june_c: 32
+    avg_humidity_pct: 55
+
+  # EUA
+  new_york:
+    name: "MetLife Stadium"
+    city: "East Rutherford, NJ"
+    country: "United States"
+    altitude_m: 5
+    avg_temp_june_c: 24
+    humidity_pct: 65
+
+  los_angeles:
+    name: "SoFi Stadium"
+    city: "Inglewood, CA"
+    country: "United States"
+    altitude_m: 28
+    avg_temp_june_c: 21
+    humidity_pct: 70
+
+  dallas:
+    name: "AT&T Stadium"
+    city: "Arlington, TX"
+    country: "United States"
+    altitude_m: 180
+    avg_temp_june_c: 33
+    humidity_pct: 55
+
+  houston:
+    name: "NRG Stadium"
+    city: "Houston, TX"
+    country: "United States"
+    altitude_m: 15
+    avg_temp_june_c: 32
+    humidity_pct: 75
+
+  miami:
+    name: "Hard Rock Stadium"
+    city: "Miami Gardens, FL"
+    country: "United States"
+    altitude_m: 3
+    avg_temp_june_c: 30
+    humidity_pct: 75
+
+  seattle:
+    name: "Lumen Field"
+    city: "Seattle, WA"
+    country: "United States"
+    altitude_m: 5
+    avg_temp_june_c: 18
+    humidity_pct: 60
+
+  san_francisco:
+    name: "Levi's Stadium"
+    city: "Santa Clara, CA"
+    country: "United States"
+    altitude_m: 20
+    avg_temp_june_c: 22
+    humidity_pct: 55
+
+  philadelphia:
+    name: "Lincoln Financial Field"
+    city: "Philadelphia, PA"
+    country: "United States"
+    altitude_m: 12
+    avg_temp_june_c: 25
+    humidity_pct: 65
+
+  atlanta:
+    name: "Mercedes-Benz Stadium"
+    city: "Atlanta, GA"
+    country: "United States"
+    altitude_m: 320
+    avg_temp_june_c: 28
+    humidity_pct: 70
+
+  kansas_city:
+    name: "Arrowhead Stadium"
+    city: "Kansas City, MO"
+    country: "United States"
+    altitude_m: 267
+    avg_temp_june_c: 27
+    humidity_pct: 65
+
+  boston:
+    name: "Gillette Stadium"
+    city: "Foxborough, MA"
+    country: "United States"
+    altitude_m: 50
+    avg_temp_june_c: 22
+    humidity_pct: 65
+
+  # Canadá
+  vancouver:
+    name: "BC Place"
+    city: "Vancouver, BC"
+    country: "Canada"
+    altitude_m: 5
+    avg_temp_june_c: 17
+    humidity_pct: 60
+
+  toronto:
+    name: "BMO Field / Rogers Centre"
+    city: "Toronto, ON"
+    country: "Canada"
+    altitude_m: 76
+    avg_temp_june_c: 21
+    humidity_pct: 65

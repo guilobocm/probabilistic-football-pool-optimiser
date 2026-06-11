@@ -1,0 +1,17 @@
+# Regras de pontuação do bolão Copa 2026
+
+active_rule: tournament_neutral_3_draw
+
+tournament_neutral_3_draw:
+  trend_win: 2       # Acertou tendência (quem ganhou)
+  diff_win: 3        # Acertou diferença de gols
+  exact_win: 4       # Acertou placar exato
+  trend_draw: 3      # Acertou que foi empate (placar errado)
+  exact_draw: 4      # Acertou placar exato do empate
+
+bonus_scoring:
+  points_per_correct: 4  # Pontos por resposta correta nos bônus
+  order_matters: false   # Ordem dos palpites não importa
+
+tiebreaker: most_exact_results
+deadline_minutes_before: 0
