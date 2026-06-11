@@ -1,15 +1,33 @@
 # World Cup 2026 Pool Optimizer
 
-This project is an educational probabilistic optimizer for a recreational World Cup prediction pool. It maximizes expected points under custom scoring rules using scoreline probability matrices, Monte Carlo simulation, FIFA 2026 bracket logic, calibration inputs, and transparent fallback handling. It is not a betting system.
+This repository is a portfolio-safe version of a probabilistic optimizer for a recreational FIFA World Cup 2026 prediction pool. It focuses on expected-points maximization, simulation, auditability, and clean data engineering practices.
 
-## Methodology
+## Architecture & Data Flow
 
-The model works in several layers:
-1. **Priors**: Base Elo ratings are used to estimate baseline strengths.
-2. **Calibration (Optional)**: Market probabilities can be ingested via CSV to override base priors and align with realistic expectations.
-3. **Score Matrices**: A Poisson-based model (with Dixon-Coles corrections) maps win/draw/loss probabilities to an exact 9x9 matrix of scoreline probabilities.
-4. **Optimization**: For each group stage match, it simulates the expected points (EP) for every possible scoreline pick under the specific scoring rules of the pool.
-5. **Monte Carlo Simulation**: Simulates the entire tournament (including the 495 possible combinations of best third-placed teams under FIFA Annexe C regulations) 100,000 times to determine optimal "Bonus Picks" (e.g. Champion, Semifinalists, Golden Boot team).
+```mermaid
+graph TD
+    A[Raw Data / Base Elo] --> B[Lambda Calibrator]
+    C[Market Odds CSV] --> B
+    B --> D[Poisson Score Matrix Generator]
+    D --> E[Pick Optimizer]
+    F[Pool Scoring Rules] --> E
+    E --> G[Group Stage Expected Points]
+    G --> H[Monte Carlo Tournament Simulator]
+    I[FIFA Annexe C Bracket Rules] --> H
+    H --> J[Final Bonus & Match Predictions]
+```
+
+## Key Features
+- **Expected Points Optimization:** Evaluates scorelines not just by raw probability, but by the mathematical Expected Points (EP) payout according to custom pool scoring rules.
+- **Scoreline Probability Matrices:** Uses a bivariate Poisson model with Dixon-Coles correction to generate full 9x9 match outcome matrices.
+- **Monte Carlo Simulation:** Simulates the entire World Cup 100,000 times to accurately price long-term outcomes (e.g. Champion, Top Scorer Team).
+- **FIFA 2026 Bracket Logic:** Fully implements the official 48-team bracket format, including the 495 combinations of best third-placed teams advancing to the Round of 32 (Annexe C).
+- **Auditability & Fallbacks:** Generates pre-submission checklists, audit logs for total goals calibration, and explicit fallbacks when market data is unavailable or rejected due to high overround.
+
+## Limitations & Disclaimer
+- **Educational Only:** This is not a betting system. It does not provide financial advice and cannot guarantee predictions in real-world scenarios.
+- **Sample Data:** This public repository contains truncated sample data (`data/sample/`, `outputs/sample/`) to demonstrate functionality without exposing proprietary API structures or operational artifacts.
+- **Simulated Outcomes:** Outputs shown in the sample directories are illustrative.
 
 ## Structure
 - `src/`: Core logic (model, optimizer, simulator).
@@ -17,6 +35,3 @@ The model works in several layers:
 - `data/sample/`: Example input datasets (players, recent form).
 - `outputs/sample/`: Example outputs (match picks, bonus picks, simulation summary).
 - `config/`: Configuration files mapping teams, scoring rules, and tournament structure.
-
-## Disclaimer
-This project is for educational and recreational purposes only. It is not designed to provide financial advice.
