@@ -1,0 +1,11 @@
+{
+  "schema_version": 1,
+  "experiment": "world-cup-2026-pre-final",
+  "frozen_at": "2026-07-16T17:15:00Z",
+  "commitment_created_at": "2026-07-16T20:36:24.146060Z",
+  "algorithm": "HMAC-SHA256",
+  "canonicalization": "UTF-8 JSON; sort_keys=true; separators=[comma,colon]; ensure_ascii=false",
+  "commitment_scope": "HMAC over a private canonical manifest containing the exact SHA-256 digest and byte length of two artifacts extracted from the frozen Git tag.",
+  "commitment": "e8602d4ffaf477251217fbd0b97dbbce708aab8f23894ddcb3c52a3b3b403bba",
+  "reveal_policy": "The private manifest, secret key and original artifacts will be revealed after the 2026 World Cup final."
+}

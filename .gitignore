@@ -1,0 +1,7 @@
+*.private.*
+private/
+sealed/
+precommit_key.private.hex
+precommit_manifest.private.json
+palpites_final.md
+montecarlo_final_10M.md
