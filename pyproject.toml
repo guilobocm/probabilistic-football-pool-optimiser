@@ -1,0 +1,31 @@
+[project]
+name = "probabilistic-football-pool-optimizer"
+version = "1.0.0"
+description = "A synthetic demonstration of a probabilistic football pool optimizer."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "numpy",
+    "scipy",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "ruff",
+    "mypy",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py311"
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+pythonpath = [
+  "."
+]
