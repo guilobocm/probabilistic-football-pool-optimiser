@@ -15,6 +15,20 @@ def get_expected_points_matrix(
     """
     Computes the expected points for each possible predicted scoreline.
     """
+    expected_shape = (max_goals + 1, max_goals + 1)
+
+    if prob_matrix.shape != expected_shape:
+        raise ValueError(
+            f"Expected probability matrix with shape {expected_shape}, "
+            f"received {prob_matrix.shape}."
+        )
+
+    if not np.all(np.isfinite(prob_matrix)):
+        raise ValueError("Probability matrix contains NaN or infinity.")
+
+    if np.any(prob_matrix < 0.0):
+        raise ValueError("Probability matrix contains negative values.")
+
     ep_matrix = np.zeros((max_goals + 1, max_goals + 1))
 
     for p_home in range(max_goals + 1):
