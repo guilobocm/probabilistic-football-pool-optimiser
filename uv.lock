@@ -377,7 +377,7 @@ dependencies = [
     { name = "scipy", version = "1.18.0", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version >= '3.12'" },
 ]
 
-[package.optional-dependencies]
+[package.dev-dependencies]
 dev = [
     { name = "mypy" },
     { name = "pytest" },
@@ -386,13 +386,16 @@ dev = [
 
 [package.metadata]
 requires-dist = [
-    { name = "mypy", marker = "extra == 'dev'" },
     { name = "numpy" },
-    { name = "pytest", marker = "extra == 'dev'" },
-    { name = "ruff", marker = "extra == 'dev'" },
     { name = "scipy" },
 ]
-provides-extras = ["dev"]
+
+[package.metadata.requires-dev]
+dev = [
+    { name = "mypy" },
+    { name = "pytest" },
+    { name = "ruff" },
+]
 
 [[package]]
 name = "pygments"

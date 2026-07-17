@@ -4,18 +4,21 @@ import datetime
 import subprocess
 from typing import Dict, Any
 
+
 def get_git_commit() -> str:
     try:
-        return subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip()
+        return subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip()
     except Exception:
         return "unknown"
 
+
 def hash_file(filepath: str) -> str:
     try:
-        with open(filepath, 'rb') as f:
+        with open(filepath, "rb") as f:
             return hashlib.sha256(f.read()).hexdigest()
     except Exception:
         return "file_not_found"
+
 
 def get_traceability_metadata(data_filepath: str) -> Dict[str, Any]:
     """
