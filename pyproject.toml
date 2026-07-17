@@ -9,7 +9,7 @@ dependencies = [
     "scipy",
 ]
 
-[project.optional-dependencies]
+[dependency-groups]
 dev = [
     "pytest",
     "ruff",

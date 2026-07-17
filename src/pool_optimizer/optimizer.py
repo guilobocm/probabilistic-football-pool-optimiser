@@ -1,17 +1,22 @@
 import numpy as np
-from typing import Tuple
+from numpy.typing import NDArray
+
 from .scoring import ScoringRule
 
+
+FloatMatrix = NDArray[np.float64]
+
+
 def get_expected_points_matrix(
-    prob_matrix: np.ndarray,
+    prob_matrix: FloatMatrix,
     rule: ScoringRule,
-    max_goals: int = 10
-) -> np.ndarray:
+    max_goals: int = 10,
+) -> FloatMatrix:
     """
     Computes the expected points for each possible predicted scoreline.
     """
     ep_matrix = np.zeros((max_goals + 1, max_goals + 1))
-    
+
     for p_home in range(max_goals + 1):
         for p_away in range(max_goals + 1):
             ep = 0.0
@@ -21,10 +26,11 @@ def get_expected_points_matrix(
                     pts = rule.calculate_points((p_home, p_away), (a_home, a_away))
                     ep += prob * pts
             ep_matrix[p_home, p_away] = ep
-            
+
     return ep_matrix
 
-def find_optimal_prediction(ep_matrix: np.ndarray) -> Tuple[int, int]:
+
+def find_optimal_prediction(ep_matrix: FloatMatrix) -> tuple[int, int]:
     """
     Finds the scoreline that maximizes expected points.
     """
