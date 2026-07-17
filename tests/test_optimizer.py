@@ -9,9 +9,104 @@ from src.pool_optimizer.optimizer import (
 from src.pool_optimizer.simulation import simulate_matches
 
 
-def test_probability_mass_is_one():
-    matrix = generate_probability_matrix(1.5, 1.0, 1.0, 1.5)
-    assert np.isclose(matrix.sum(), 1.0, atol=1e-4)
+def test_probability_matrix_is_normalized_after_truncation():
+    matrix = generate_probability_matrix(
+        home_attack=2.0,
+        home_defense=2.0,
+        away_attack=2.0,
+        away_defense=2.0,
+        max_goals=2,
+        base_lambda=1.5,
+    )
+
+    assert np.isclose(matrix.sum(), 1.0, atol=1e-12)
+
+
+@pytest.mark.parametrize(
+    "strength_name",
+    ["home_attack", "home_defense", "away_attack", "away_defense"],
+)
+def test_negative_strength_is_rejected(strength_name):
+    strengths = {
+        "home_attack": 1.0,
+        "home_defense": 1.0,
+        "away_attack": 1.0,
+        "away_defense": 1.0,
+    }
+    strengths[strength_name] = -0.1
+
+    with pytest.raises(ValueError, match="non-negative"):
+        generate_probability_matrix(**strengths)
+
+
+@pytest.mark.parametrize(
+    "strength_name",
+    ["home_attack", "home_defense", "away_attack", "away_defense"],
+)
+def test_nan_strength_is_rejected(strength_name):
+    strengths = {
+        "home_attack": 1.0,
+        "home_defense": 1.0,
+        "away_attack": 1.0,
+        "away_defense": 1.0,
+    }
+    strengths[strength_name] = float("nan")
+
+    with pytest.raises(ValueError, match="finite"):
+        generate_probability_matrix(**strengths)
+
+
+@pytest.mark.parametrize(
+    "strength_name",
+    ["home_attack", "home_defense", "away_attack", "away_defense"],
+)
+def test_infinite_strength_is_rejected(strength_name):
+    strengths = {
+        "home_attack": 1.0,
+        "home_defense": 1.0,
+        "away_attack": 1.0,
+        "away_defense": 1.0,
+    }
+    strengths[strength_name] = float("inf")
+
+    with pytest.raises(ValueError, match="finite"):
+        generate_probability_matrix(**strengths)
+
+
+@pytest.mark.parametrize("invalid_max_goals", [-1, 1.5, True])
+def test_invalid_max_goals_is_rejected(invalid_max_goals):
+    with pytest.raises(ValueError, match="non-negative integer"):
+        generate_probability_matrix(
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            max_goals=invalid_max_goals,
+        )
+
+
+@pytest.mark.parametrize("invalid_base_lambda", [0.0, -1.0, float("nan"), float("inf")])
+def test_invalid_base_lambda_is_rejected(invalid_base_lambda):
+    with pytest.raises(ValueError, match="finite and positive"):
+        generate_probability_matrix(
+            1.0,
+            1.0,
+            1.0,
+            1.0,
+            base_lambda=invalid_base_lambda,
+        )
+
+
+def test_zero_probability_mass_is_rejected():
+    with pytest.raises(ValueError, match="invalid total mass"):
+        generate_probability_matrix(
+            home_attack=1.0,
+            home_defense=1.0,
+            away_attack=1.0,
+            away_defense=1.0,
+            max_goals=0,
+            base_lambda=1000.0,
+        )
 
 
 def test_expected_points_matches_manual_calculation():
@@ -30,6 +125,33 @@ def test_expected_points_matches_manual_calculation():
     assert np.isclose(ep_matrix[2, 1], 2.0)
     # If we predict 0-1, we get nothing (0 pts)
     assert np.isclose(ep_matrix[0, 1], 0.0)
+
+
+def test_probability_matrix_shape_mismatch_is_rejected():
+    rule = ScoringRule(exact_score=3, correct_outcome=1, correct_goal_difference=2)
+    prob_matrix = np.zeros((2, 2))
+
+    with pytest.raises(ValueError, match=r"shape \(3, 3\)"):
+        get_expected_points_matrix(prob_matrix, rule, max_goals=2)
+
+
+def test_negative_probability_is_rejected():
+    rule = ScoringRule(exact_score=3, correct_outcome=1, correct_goal_difference=2)
+    prob_matrix = np.zeros((3, 3))
+    prob_matrix[0, 0] = -0.1
+
+    with pytest.raises(ValueError, match="negative values"):
+        get_expected_points_matrix(prob_matrix, rule, max_goals=2)
+
+
+@pytest.mark.parametrize("nonfinite_value", [float("nan"), float("inf")])
+def test_nonfinite_probability_is_rejected(nonfinite_value):
+    rule = ScoringRule(exact_score=3, correct_outcome=1, correct_goal_difference=2)
+    prob_matrix = np.zeros((3, 3))
+    prob_matrix[0, 0] = nonfinite_value
+
+    with pytest.raises(ValueError, match="NaN or infinity"):
+        get_expected_points_matrix(prob_matrix, rule, max_goals=2)
 
 
 def test_optimizer_returns_global_maximum():

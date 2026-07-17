@@ -21,10 +21,12 @@ def simulate_matches(
     flat_probs = flat_probs / flat_probs.sum()
 
     indices = rng.choice(len(flat_probs), size=num_simulations, p=flat_probs)
+    rows, cols = np.unravel_index(indices, prob_matrix.shape)
 
-    results: list[tuple[int, int]] = []
-    for idx in indices:
-        row, col = np.unravel_index(idx, prob_matrix.shape)
-        results.append((int(row), int(col)))
-
-    return results
+    return list(
+        zip(
+            rows.astype(int).tolist(),
+            cols.astype(int).tolist(),
+            strict=True,
+        )
+    )
