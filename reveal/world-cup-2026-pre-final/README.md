@@ -13,6 +13,7 @@ After disclosure, the HMAC key is no longer secret and anyone can compute new HM
 To verify the commitment, run the included verification script:
 
 ```bash
+cd reveal/world-cup-2026-pre-final
 python verify_commitment.py
 ```
 
@@ -23,3 +24,19 @@ The script will:
 4. Verify the SHA-256 digests and byte sizes of the attached artifact files.
 
 See `verification_output.txt` for an example of a successful run.
+
+## Interpretation note
+
+The two revealed artifacts serve different purposes.
+
+palpites_final.md is the authoritative final-picks artifact produced by the
+operational optimization pipeline. Its expected-point values are the values
+associated with the submitted optimized recommendations.
+
+montecarlo_final_10M.md is a separate sensitivity analysis based on an
+independent-Poisson 90-minute simulation. Its expected-point values belong to
+that simplified sensitivity model and should not be interpreted as replacements
+for the values reported in palpites_final.md.
+
+Both files are published without modification because the commitment covers
+their exact original bytes.
