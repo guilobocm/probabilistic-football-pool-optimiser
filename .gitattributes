@@ -1,0 +1,7 @@
+reveal/world-cup-2026-pre-final/precommit_key.hex -text -whitespace
+reveal/world-cup-2026-pre-final/precommit_manifest.json -text -whitespace
+reveal/world-cup-2026-pre-final/palpites_final.md -text -whitespace
+reveal/world-cup-2026-pre-final/montecarlo_final_10M.md -text -whitespace
+reveal/world-cup-2026-pre-final/README.md text eol=lf
+reveal/world-cup-2026-pre-final/verify_commitment.py text eol=lf
+reveal/world-cup-2026-pre-final/verification_output.txt text eol=lf

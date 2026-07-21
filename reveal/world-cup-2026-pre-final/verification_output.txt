@@ -1,0 +1,15 @@
+=== Cryptographic Revelation and Verification ===
+[1] Public Commitment Loaded (HMAC): e8602d4ffaf477251217fbd0b97dbbce708aab8f23894ddcb3c52a3b3b403bba
+[2] HMAC key loaded: OK (32 bytes)
+[3] Computed HMAC-SHA256: e8602d4ffaf477251217fbd0b97dbbce708aab8f23894ddcb3c52a3b3b403bba
+    -> SUCCESS: HMAC MATCHES PUBLIC COMMITMENT!
+
+=== Verifying Attached Artifacts ===
+    - palpites_final.md: OK
+      Expected: fdddc68aa735b5d679d8ae82de7dd9c7c35ebc6bd0eea45bd10fadb4a2a45520
+      Actual:   fdddc68aa735b5d679d8ae82de7dd9c7c35ebc6bd0eea45bd10fadb4a2a45520
+    - montecarlo_final_10M.md: OK
+      Expected: 783722576c7a80c769ef737ec8e71e93fcd628443393728ceeb2efdb15ccc449
+      Actual:   783722576c7a80c769ef737ec8e71e93fcd628443393728ceeb2efdb15ccc449
+
+ALL VERIFICATIONS PASSED SUCCESSFULLY.
