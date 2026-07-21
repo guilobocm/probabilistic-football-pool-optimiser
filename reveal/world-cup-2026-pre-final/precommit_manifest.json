@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "experiment": "world-cup-2026-pre-final",
+  "frozen_at": "2026-07-16T17:15:00Z",
+  "source_ref": "world-cup-2026-pre-final",
+  "source_commit": "6a1c97dd8cf338786aed3dc041cfb8196f57648e",
+  "artifacts": [
+    {
+      "repository_path": "outputs/palpites_final.md",
+      "filename": "palpites_final.md",
+      "size_bytes": 1367,
+      "sha256": "fdddc68aa735b5d679d8ae82de7dd9c7c35ebc6bd0eea45bd10fadb4a2a45520"
+    },
+    {
+      "repository_path": "outputs/montecarlo_final_10M.md",
+      "filename": "montecarlo_final_10M.md",
+      "size_bytes": 3398,
+      "sha256": "783722576c7a80c769ef737ec8e71e93fcd628443393728ceeb2efdb15ccc449"
+    }
+  ]
+}
