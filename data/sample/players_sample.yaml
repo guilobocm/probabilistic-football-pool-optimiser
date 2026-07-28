@@ -1,0 +1,141 @@
+# Curated sample dataset: leading forwards and creators
+# Fields cover goal share, assist share, expected minutes, and penalty-taking duties.
+players:
+  - name: "Kylian Mbappé"
+    team: "France"
+    goalshare_pct: 0.35
+    assist_share_pct: 0.15
+    expected_minutes: 85
+    penalty_taker: true
+  - name: "Lionel Messi"
+    team: "Argentina"
+    goalshare_pct: 0.25
+    assist_share_pct: 0.30
+    expected_minutes: 90
+    penalty_taker: true
+  - name: "Lautaro Martínez"
+    team: "Argentina"
+    goalshare_pct: 0.22
+    assist_share_pct: 0.05
+    expected_minutes: 75
+    penalty_taker: false
+  - name: "Harry Kane"
+    team: "England"
+    goalshare_pct: 0.38
+    assist_share_pct: 0.10
+    expected_minutes: 85
+    penalty_taker: true
+  - name: "Jude Bellingham"
+    team: "England"
+    goalshare_pct: 0.15
+    assist_share_pct: 0.20
+    expected_minutes: 90
+    penalty_taker: false
+  - name: "Vinícius Júnior"
+    team: "Brazil"
+    goalshare_pct: 0.25
+    assist_share_pct: 0.20
+    expected_minutes: 85
+    penalty_taker: false
+  - name: "Rodrygo"
+    team: "Brazil"
+    goalshare_pct: 0.18
+    assist_share_pct: 0.15
+    expected_minutes: 80
+    penalty_taker: true
+  - name: "Álvaro Morata"
+    team: "Spain"
+    goalshare_pct: 0.28
+    assist_share_pct: 0.05
+    expected_minutes: 70
+    penalty_taker: true
+  - name: "Lamine Yamal"
+    team: "Spain"
+    goalshare_pct: 0.15
+    assist_share_pct: 0.25
+    expected_minutes: 80
+    penalty_taker: false
+  - name: "Cristiano Ronaldo"
+    team: "Portugal"
+    goalshare_pct: 0.32
+    assist_share_pct: 0.05
+    expected_minutes: 85
+    penalty_taker: true
+  - name: "Bruno Fernandes"
+    team: "Portugal"
+    goalshare_pct: 0.18
+    assist_share_pct: 0.35
+    expected_minutes: 90
+    penalty_taker: false
+  - name: "Niclas Füllkrug"
+    team: "Germany"
+    goalshare_pct: 0.25
+    assist_share_pct: 0.05
+    expected_minutes: 65
+    penalty_taker: false
+  - name: "Jamal Musiala"
+    team: "Germany"
+    goalshare_pct: 0.18
+    assist_share_pct: 0.20
+    expected_minutes: 85
+    penalty_taker: false
+  - name: "Cody Gakpo"
+    team: "Netherlands"
+    goalshare_pct: 0.28
+    assist_share_pct: 0.15
+    expected_minutes: 80
+    penalty_taker: true
+  - name: "Romelu Lukaku"
+    team: "Belgium"
+    goalshare_pct: 0.35
+    assist_share_pct: 0.10
+    expected_minutes: 85
+    penalty_taker: true
+  - name: "Darwin Núñez"
+    team: "Uruguay"
+    goalshare_pct: 0.30
+    assist_share_pct: 0.10
+    expected_minutes: 85
+    penalty_taker: true
+  - name: "Luis Díaz"
+    team: "Colombia"
+    goalshare_pct: 0.25
+    assist_share_pct: 0.15
+    expected_minutes: 85
+    penalty_taker: false
+  - name: "Christian Pulisic"
+    team: "United States"
+    goalshare_pct: 0.28
+    assist_share_pct: 0.20
+    expected_minutes: 85
+    penalty_taker: true
+  - name: "Santiago Giménez"
+    team: "Mexico"
+    goalshare_pct: 0.25
+    assist_share_pct: 0.05
+    expected_minutes: 80
+    penalty_taker: true
+  - name: "Son Heung-min"
+    team: "South Korea"
+    goalshare_pct: 0.35
+    assist_share_pct: 0.20
+    expected_minutes: 90
+    penalty_taker: true
+  - name: "Mehdi Taremi"
+    team: "Iran"
+    goalshare_pct: 0.38
+    assist_share_pct: 0.15
+    expected_minutes: 90
+    penalty_taker: true
+  - name: "Victor Osimhen"
+    team: "Nigeria"
+    goalshare_pct: 0.40
+    assist_share_pct: 0.05
+    expected_minutes: 90
+    penalty_taker: true
+  - name: "Mohamed Salah"
+    team: "Egypt"
+    goalshare_pct: 0.42
+    assist_share_pct: 0.20
+    expected_minutes: 90
+    penalty_taker: true

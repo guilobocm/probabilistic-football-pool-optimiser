@@ -1,0 +1,229 @@
+{
+  "schema_version": "1.1",
+  "pipeline_source_commit": "474f48f310d9f16b0de339c33eb47156d641998d",
+  "package_commit": "TBD",
+  "package_commit_verification": "external",
+  "generated_at_utc": "2026-07-28T18:17:10.684734Z",
+  "environment": {
+    "python_version": "3.13.14",
+    "platform": "redacted",
+    "machine": "redacted",
+    "uv_version": "uv 0.11.29",
+    "matplotlib_version": "unknown",
+    "bootstrap_seed": 42,
+    "bootstrap_iterations": 10000,
+    "timezone_handling": "UTC explicit"
+  },
+  "sources": [
+    {
+      "path": "postmortem/data/external_evidence/normalized/chatgpt_eligibility_by_match.json",
+      "sha256": "47e49845d81c7b00884ea471b62721ab1462309001fb604fa720e0a7930b15f9"
+    },
+    {
+      "path": "postmortem/data/external_evidence/normalized/chatgpt_raw_messages_capsule.json",
+      "sha256": "cc76135982bf520e356801590c5303331da8cdf499e521e02d2fdc142014e5b1"
+    },
+    {
+      "path": "postmortem/data/recovered/ce7aba4_match_picks.csv",
+      "sha256": "a7a278aa5a90b3563473a480f6d409dfac952ac41eac1c8d664ae512e37bf19b"
+    },
+    {
+      "path": "postmortem/data/official_results_canonical.csv",
+      "sha256": "7e6035bf7c74925db69a4fd532dfc6d6a3c5ceb8c8d76804477d41086493fedf"
+    },
+    {
+      "path": "postmortem/reconstruction/group_stage/snapshot_resolution.csv",
+      "sha256": "67112d30282b30b42e62d581c82809d990debee88bc925f660e4df35e9ed51fc"
+    },
+    {
+      "path": "pyproject.toml",
+      "sha256": "f0c690c386bc11976389a6dac0166bf15837bdd8a122beb5dd75ff448d29b1aa"
+    },
+    {
+      "path": "uv.lock",
+      "sha256": "404cb9fa446f93028623f6e40afef3238377d7ca3277a496b88abaac146ac573"
+    }
+  ],
+  "artifacts": [
+    {
+      "artifact_path": "postmortem/data/external_evidence/manifests/external_evidence_sources.jsonl",
+      "sha256": "6ee4238baed035151d3ac08f261125eedff2b2c398326818c269fe4ef05ec216",
+      "generated_by": "postmortem/scripts/generate_chatgpt_native_records.py",
+      "source_artifacts": [
+        "postmortem/data/external_evidence/normalized/chatgpt_eligibility_by_match.json",
+        "postmortem/data/external_evidence/normalized/chatgpt_raw_messages_capsule.json",
+        "postmortem/data/recovered/ce7aba4_match_picks.csv",
+        "postmortem/data/official_results_canonical.csv",
+        "postmortem/reconstruction/group_stage/snapshot_resolution.csv",
+        "pyproject.toml",
+        "uv.lock"
+      ],
+      "parameters": {
+        "bootstrap_seed": 42,
+        "bootstrap_iterations": 10000
+      }
+    },
+    {
+      "artifact_path": "postmortem/reconstruction/group_stage/final_eligibility_funnel.csv",
+      "sha256": "ddcf10fd7285bec7e34b686d1d8f07128af7981fc170c8f8540d7469d89cd191",
+      "generated_by": "postmortem/scripts/resolve_external_evidence.py",
+      "source_artifacts": [
+        "postmortem/data/external_evidence/normalized/chatgpt_eligibility_by_match.json",
+        "postmortem/data/external_evidence/normalized/chatgpt_raw_messages_capsule.json",
+        "postmortem/data/recovered/ce7aba4_match_picks.csv",
+        "postmortem/data/official_results_canonical.csv",
+        "postmortem/reconstruction/group_stage/snapshot_resolution.csv",
+        "pyproject.toml",
+        "uv.lock"
+      ],
+      "parameters": {
+        "bootstrap_seed": 42,
+        "bootstrap_iterations": 10000
+      }
+    },
+    {
+      "artifact_path": "postmortem/scoring/group_stage/tier_b_scoring_by_decision.csv",
+      "sha256": "8fb90edd6e7e52cdd05be9d801ebf1c8f5009149efe432fcba1c4aa99b8ca619",
+      "generated_by": "postmortem/scripts/calculate_tier_b_scoring.py",
+      "source_artifacts": [
+        "postmortem/data/external_evidence/normalized/chatgpt_eligibility_by_match.json",
+        "postmortem/data/external_evidence/normalized/chatgpt_raw_messages_capsule.json",
+        "postmortem/data/recovered/ce7aba4_match_picks.csv",
+        "postmortem/data/official_results_canonical.csv",
+        "postmortem/reconstruction/group_stage/snapshot_resolution.csv",
+        "pyproject.toml",
+        "uv.lock"
+      ],
+      "parameters": {
+        "bootstrap_seed": 42,
+        "bootstrap_iterations": 10000
+      }
+    },
+    {
+      "artifact_path": "postmortem/scoring/group_stage/tier_b_p5035_flips.csv",
+      "sha256": "3cd04a696dcff7fda55d4e70a1d63d7474c09831eaf330085803d023068d6582",
+      "generated_by": "postmortem/scripts/calculate_tier_b_scoring.py",
+      "source_artifacts": [
+        "postmortem/data/external_evidence/normalized/chatgpt_eligibility_by_match.json",
+        "postmortem/data/external_evidence/normalized/chatgpt_raw_messages_capsule.json",
+        "postmortem/data/recovered/ce7aba4_match_picks.csv",
+        "postmortem/data/official_results_canonical.csv",
+        "postmortem/reconstruction/group_stage/snapshot_resolution.csv",
+        "pyproject.toml",
+        "uv.lock"
+      ],
+      "parameters": {
+        "bootstrap_seed": 42,
+        "bootstrap_iterations": 10000
+      }
+    },
+    {
+      "artifact_path": "postmortem/scoring/group_stage/tier_b_classic_summary.json",
+      "sha256": "1f4d87b8603529ab2236acb04836af039b4c860727ee02233c5149a921b64c5b",
+      "generated_by": "postmortem/scripts/calculate_tier_b_scoring.py",
+      "source_artifacts": [
+        "postmortem/data/external_evidence/normalized/chatgpt_eligibility_by_match.json",
+        "postmortem/data/external_evidence/normalized/chatgpt_raw_messages_capsule.json",
+        "postmortem/data/recovered/ce7aba4_match_picks.csv",
+        "postmortem/data/official_results_canonical.csv",
+        "postmortem/reconstruction/group_stage/snapshot_resolution.csv",
+        "pyproject.toml",
+        "uv.lock"
+      ],
+      "parameters": {
+        "bootstrap_seed": 42,
+        "bootstrap_iterations": 10000
+      }
+    },
+    {
+      "artifact_path": "postmortem/scoring/group_stage/tier_b_optimization_uplift.csv",
+      "sha256": "83cbb0baf11c935304cedc8367eb1c5ae382a6c985e16179c9d9113e97137bcc",
+      "generated_by": "postmortem/scripts/calculate_tier_b_scoring.py",
+      "source_artifacts": [
+        "postmortem/data/external_evidence/normalized/chatgpt_eligibility_by_match.json",
+        "postmortem/data/external_evidence/normalized/chatgpt_raw_messages_capsule.json",
+        "postmortem/data/recovered/ce7aba4_match_picks.csv",
+        "postmortem/data/official_results_canonical.csv",
+        "postmortem/reconstruction/group_stage/snapshot_resolution.csv",
+        "pyproject.toml",
+        "uv.lock"
+      ],
+      "parameters": {
+        "bootstrap_seed": 42,
+        "bootstrap_iterations": 10000
+      }
+    },
+    {
+      "artifact_path": "postmortem/final/figures/fig1_ep_vs_realized.png",
+      "sha256": "40b032f0cd8424484e3d17e02bc5976c9859d3ca86ca67eacded1400455d36bd",
+      "generated_by": "postmortem/scripts/generate_figures.py",
+      "source_artifacts": [
+        "postmortem/data/external_evidence/normalized/chatgpt_eligibility_by_match.json",
+        "postmortem/data/external_evidence/normalized/chatgpt_raw_messages_capsule.json",
+        "postmortem/data/recovered/ce7aba4_match_picks.csv",
+        "postmortem/data/official_results_canonical.csv",
+        "postmortem/reconstruction/group_stage/snapshot_resolution.csv",
+        "pyproject.toml",
+        "uv.lock"
+      ],
+      "parameters": {
+        "bootstrap_seed": 42,
+        "bootstrap_iterations": 10000
+      }
+    },
+    {
+      "artifact_path": "postmortem/final/figures/fig2_optimization_uplift_distribution.png",
+      "sha256": "05296c0feac29ef305b7007cb37168ce29efdd4fb05c6a28186bffa437ac6b9f",
+      "generated_by": "postmortem/scripts/generate_figures.py",
+      "source_artifacts": [
+        "postmortem/data/external_evidence/normalized/chatgpt_eligibility_by_match.json",
+        "postmortem/data/external_evidence/normalized/chatgpt_raw_messages_capsule.json",
+        "postmortem/data/recovered/ce7aba4_match_picks.csv",
+        "postmortem/data/official_results_canonical.csv",
+        "postmortem/reconstruction/group_stage/snapshot_resolution.csv",
+        "pyproject.toml",
+        "uv.lock"
+      ],
+      "parameters": {
+        "bootstrap_seed": 42,
+        "bootstrap_iterations": 10000
+      }
+    },
+    {
+      "artifact_path": "postmortem/final/figures/fig3_predicted_vs_actual_goals.png",
+      "sha256": "0c16199df52a04c16be139639e52f45de23c8d5c4ccc0e37cd96a6433cc4edc9",
+      "generated_by": "postmortem/scripts/generate_figures.py",
+      "source_artifacts": [
+        "postmortem/data/external_evidence/normalized/chatgpt_eligibility_by_match.json",
+        "postmortem/data/external_evidence/normalized/chatgpt_raw_messages_capsule.json",
+        "postmortem/data/recovered/ce7aba4_match_picks.csv",
+        "postmortem/data/official_results_canonical.csv",
+        "postmortem/reconstruction/group_stage/snapshot_resolution.csv",
+        "pyproject.toml",
+        "uv.lock"
+      ],
+      "parameters": {
+        "bootstrap_seed": 42,
+        "bootstrap_iterations": 10000
+      }
+    },
+    {
+      "artifact_path": "postmortem/final/figures/fig4_eligibility_funnel.png",
+      "sha256": "1a9cd2ac4a30e5775d72722b9d5d4d2954e7d8124b616cfdd9a50028ef97e229",
+      "generated_by": "postmortem/scripts/generate_figures.py",
+      "source_artifacts": [
+        "postmortem/data/external_evidence/normalized/chatgpt_eligibility_by_match.json",
+        "postmortem/data/external_evidence/normalized/chatgpt_raw_messages_capsule.json",
+        "postmortem/data/recovered/ce7aba4_match_picks.csv",
+        "postmortem/data/official_results_canonical.csv",
+        "postmortem/reconstruction/group_stage/snapshot_resolution.csv",
+        "pyproject.toml",
+        "uv.lock"
+      ],
+      "parameters": {
+        "bootstrap_seed": 42,
+        "bootstrap_iterations": 10000
+      }
+    }
+  ]
+}

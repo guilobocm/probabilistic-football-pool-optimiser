@@ -1,40 +1,15 @@
-*.private.*
-private/
-sealed/
-precommit_key.private.hex
-precommit_manifest.private.json
-palpites_final.md
-montecarlo_final_10M.md
+.env
+.env.*
+!.env.example
 
-# Python bytecode
 __pycache__/
-*.py[cod]
-*$py.class
-
-# Virtual environments
-.venv/
-venv/
-
-# Tool caches
 .pytest_cache/
-.mypy_cache/
-.ruff_cache/
+*.pyc
 
-# Coverage
-.coverage
-.coverage.*
-htmlcov/
+data/raw/
+outputs/
+*.duckdb
+*.sqlite
+*.log
 
-# Packaging
-build/
-dist/
-*.egg-info/
-
-# IDEs
 .vscode/
-.idea/
-
-# Operating systems
-.DS_Store
-Thumbs.db
-desktop.ini

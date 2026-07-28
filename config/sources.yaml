@@ -1,0 +1,42 @@
+# Model data sources
+sources:
+  - name: manual_odds
+    type: csv
+    path: data/raw/odds_input.csv
+    enabled: true
+    description: "Permitted 1X2 odds sources, manually supplied in CSV format"
+
+  - name: external_model
+    type: manual_probability_csv
+    path: data/raw/external_model_probs.csv
+    enabled: true
+    description: "Probabilities from external models (FGV, Opta, and similar sources)"
+
+  - name: team_ratings
+    type: csv
+    path: data/raw/team_ratings.csv
+    enabled: true
+    description: "Elo ratings, FIFA ranking, xG, and xGA by national team"
+
+# Ensemble weights by tournament phase
+ensemble_weights:
+  pre_tournament:
+    external_odds: 0.45
+    own_model: 0.25
+    form_xg: 0.15
+    squad_news: 0.10
+    videogame: 0.05
+
+  group_stage:
+    external_odds: 0.40
+    own_model: 0.25
+    tournament_performance: 0.20
+    squad_news: 0.15
+    videogame: 0.00
+
+  knockout:
+    external_odds: 0.35
+    own_model: 0.25
+    tournament_performance: 0.25
+    squad_news: 0.15
+    videogame: 0.00

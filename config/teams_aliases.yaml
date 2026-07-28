@@ -1,0 +1,309 @@
+# Canonical national-team name mapping
+# Each team has one canonical English name and a list of recognised aliases.
+# Aliases include common English variants, official local names, and federation codes.
+
+teams:
+  Argentina:
+    code: ARG
+    confederation: CONMEBOL
+    aliases: ["Argentina", "ARG", "Argentine"]
+
+  Australia:
+    code: AUS
+    confederation: AFC
+    aliases: ["Australia", "AUS"]
+
+  Belgium:
+    code: BEL
+    confederation: UEFA
+    aliases: ["Belgium", "BEL", "België"]
+
+  Bolivia:
+    code: BOL
+    confederation: CONMEBOL
+    aliases: ["Bolivia", "BOL"]
+
+  Brazil:
+    code: BRA
+    confederation: CONMEBOL
+    aliases: ["Brazil", "BRA"]
+
+  Cameroon:
+    code: CMR
+    confederation: CAF
+    aliases: ["Cameroon", "CMR", "Cameroun"]
+
+  Canada:
+    code: CAN
+    confederation: CONCACAF
+    aliases: ["Canada", "CAN"]
+
+  Colombia:
+    code: COL
+    confederation: CONMEBOL
+    aliases: ["Colombia", "COL"]
+
+  Croatia:
+    code: CRO
+    confederation: UEFA
+    aliases: ["Croatia", "CRO", "Hrvatska"]
+
+  Denmark:
+    code: DEN
+    confederation: UEFA
+    aliases: ["Denmark", "DEN", "Danmark"]
+
+  Ecuador:
+    code: ECU
+    confederation: CONMEBOL
+    aliases: ["Ecuador", "ECU"]
+
+  Egypt:
+    code: EGY
+    confederation: CAF
+    aliases: ["Egypt", "EGY"]
+
+  England:
+    code: ENG
+    confederation: UEFA
+    aliases: ["England", "ENG"]
+
+  France:
+    code: FRA
+    confederation: UEFA
+    aliases: ["France", "FRA"]
+
+  Germany:
+    code: GER
+    confederation: UEFA
+    aliases: ["Germany", "GER", "Deutschland"]
+
+  Indonesia:
+    code: IDN
+    confederation: AFC
+    aliases: ["Indonesia", "IDN"]
+
+  Iran:
+    code: IRN
+    confederation: AFC
+    aliases: ["Iran", "IRN"]
+
+  Italy:
+    code: ITA
+    confederation: UEFA
+    aliases: ["Italy", "ITA", "Italia"]
+
+  Japan:
+    code: JPN
+    confederation: AFC
+    aliases: ["Japan", "JPN"]
+
+  Mexico:
+    code: MEX
+    confederation: CONCACAF
+    aliases: ["Mexico", "MEX", "México"]
+
+  Morocco:
+    code: MAR
+    confederation: CAF
+    aliases: ["Morocco", "MAR", "Maroc"]
+
+  Netherlands:
+    code: NED
+    confederation: UEFA
+    aliases: ["Netherlands", "NED", "Holland", "Nederland"]
+
+  Nigeria:
+    code: NGA
+    confederation: CAF
+    aliases: ["Nigeria", "NGA"]
+
+  Norway:
+    code: NOR
+    confederation: UEFA
+    aliases: ["Norway", "NOR", "Norge"]
+
+  Panama:
+    code: PAN
+    confederation: CONCACAF
+    aliases: ["Panama", "PAN", "Panamá"]
+
+  Paraguay:
+    code: PAR
+    confederation: CONMEBOL
+    aliases: ["Paraguay", "PAR"]
+
+  Peru:
+    code: PER
+    confederation: CONMEBOL
+    aliases: ["Peru", "PER", "Perú"]
+
+  Poland:
+    code: POL
+    confederation: UEFA
+    aliases: ["Poland", "POL", "Polska"]
+
+  Portugal:
+    code: POR
+    confederation: UEFA
+    aliases: ["Portugal", "POR"]
+
+  Qatar:
+    code: QAT
+    confederation: AFC
+    aliases: ["Qatar", "QAT"]
+
+  "Republic of Ireland":
+    code: IRL
+    confederation: UEFA
+    aliases: ["Republic of Ireland", "IRL", "Ireland"]
+
+  "Saudi Arabia":
+    code: KSA
+    confederation: AFC
+    aliases: ["Saudi Arabia", "KSA"]
+
+  Senegal:
+    code: SEN
+    confederation: CAF
+    aliases: ["Senegal", "SEN"]
+
+  Serbia:
+    code: SRB
+    confederation: UEFA
+    aliases: ["Serbia", "SRB", "Srbija"]
+
+  Slovenia:
+    code: SVN
+    confederation: UEFA
+    aliases: ["Slovenia", "SVN", "Slovenija"]
+
+  "South Korea":
+    code: KOR
+    confederation: AFC
+    aliases: ["South Korea", "KOR", "Korea Republic", "Republic of Korea"]
+
+  Spain:
+    code: ESP
+    confederation: UEFA
+    aliases: ["Spain", "ESP", "España"]
+
+  Switzerland:
+    code: SUI
+    confederation: UEFA
+    aliases: ["Switzerland", "SUI", "Schweiz", "Suisse", "Svizzera"]
+
+  Türkiye:
+    code: TUR
+    confederation: UEFA
+    aliases: ["Türkiye", "TUR", "Turkey"]
+
+  Ukraine:
+    code: UKR
+    confederation: UEFA
+    aliases: ["Ukraine", "UKR", "Ukraina"]
+
+  Uruguay:
+    code: URU
+    confederation: CONMEBOL
+    aliases: ["Uruguay", "URU"]
+
+  "United States":
+    code: USA
+    confederation: CONCACAF
+    aliases: ["United States", "USA", "US", "United States of America"]
+
+  Uzbekistan:
+    code: UZB
+    confederation: AFC
+    aliases: ["Uzbekistan", "UZB", "Oʻzbekiston"]
+
+  Wales:
+    code: WAL
+    confederation: UEFA
+    aliases: ["Wales", "WAL", "Cymru"]
+
+  Chile:
+    code: CHI
+    confederation: CONMEBOL
+    aliases: ["Chile", "CHI"]
+
+  "Costa Rica":
+    code: CRC
+    confederation: CONCACAF
+    aliases: ["Costa Rica", "CRC"]
+
+  Honduras:
+    code: HON
+    confederation: CONCACAF
+    aliases: ["Honduras", "HON"]
+
+  Jamaica:
+    code: JAM
+    confederation: CONCACAF
+    aliases: ["Jamaica", "JAM"]
+
+  "New Zealand":
+    code: NZL
+    confederation: OFC
+    aliases: ["New Zealand", "NZL", "Aotearoa"]
+
+  "Trinidad and Tobago":
+    code: TRI
+    confederation: CONCACAF
+    aliases: ["Trinidad and Tobago", "TRI"]
+
+  Tunisia:
+    code: TUN
+    confederation: CAF
+    aliases: ["Tunisia", "TUN"]
+
+  Venezuela:
+    code: VEN
+    confederation: CONMEBOL
+    aliases: ["Venezuela", "VEN"]
+
+  Ghana:
+    code: GHA
+    confederation: CAF
+    aliases: ["Ghana", "GHA"]
+
+  "DR Congo":
+    code: COD
+    confederation: CAF
+    aliases: ["DR Congo", "COD", "Congo DR", "Democratic Republic of the Congo"]
+
+  "Ivory Coast":
+    code: CIV
+    confederation: CAF
+    aliases: ["Ivory Coast", "CIV", "Côte d'Ivoire"]
+
+  Mali:
+    code: MLI
+    confederation: CAF
+    aliases: ["Mali", "MLI"]
+
+  Tanzania:
+    code: TAN
+    confederation: CAF
+    aliases: ["Tanzania", "TAN"]
+
+  Algeria:
+    code: ALG
+    confederation: CAF
+    aliases: ["Algeria", "ALG"]
+
+  "Burkina Faso":
+    code: BFA
+    confederation: CAF
+    aliases: ["Burkina Faso", "BFA"]
+
+  "South Africa":
+    code: RSA
+    confederation: CAF
+    aliases: ["South Africa", "RSA"]
+
+  Kenya:
+    code: KEN
+    confederation: CAF
+    aliases: ["Kenya", "KEN"]
