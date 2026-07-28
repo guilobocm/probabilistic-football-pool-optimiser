@@ -1,33 +1,35 @@
 """
-Scoring Rules — Parametric implementation of the bolão scoring function.
+Scoring Rules — parametric implementation of the prediction-pool scoring model.
 
-Implements the "Exemplo Torneio" rule (neutral venue, no home/away distinction):
-  - Win trend correct: 2 pts
-  - Win goal diff correct: 3 pts
-  - Win exact score: 4 pts
-  - Draw trend correct: 3 pts
-  - Draw exact score: 4 pts
+Implements the neutral-venue tournament rule:
+- Correct winning team: 2 points
+- Correct winning margin: 3 points
+- Correct exact winning scoreline: 4 points
+- Correct draw, incorrect scoreline: 3 points
+- Correct exact draw scoreline: 4 points
 
-Key insight: draw in the trend yields 3 points vs 2 for a win,
-creating an incentive to bet on a draw in balanced matches.
+A correct non-exact draw is worth three points, compared with two points for a
+correct non-exact win. That asymmetry can make a draw the expected-points-
+maximising selection in sufficiently balanced matches.
 """
 
 from __future__ import annotations
 
-import yaml
-from pathlib import Path
 from dataclasses import dataclass
+from pathlib import Path
+
+import yaml
 
 
 @dataclass
 class ScoringRule:
-    """Parametric scoring rule for the bolão."""
+    """Parametric scoring rule for the prediction pool."""
 
-    trend_win: int = 2  # Correct trend (who won)
-    diff_win: int = 3  # Correct goal difference
-    exact_win: int = 4  # Exact score (win)
-    trend_draw: int = 3  # Correct trend (draw, wrong score)
-    exact_draw: int = 4  # Exact draw score
+    trend_win: int = 2
+    diff_win: int = 3
+    exact_win: int = 4
+    trend_draw: int = 3
+    exact_draw: int = 4
 
     def to_dict(self) -> dict[str, int]:
         return {
@@ -39,8 +41,8 @@ class ScoringRule:
         }
 
 
-def load_active_rule(config_path: Path = None) -> ScoringRule:
-    """Loads the active rule configured in the YAML."""
+def load_active_rule(config_path: Path | None = None) -> ScoringRule:
+    """Load the active scoring rule configured in YAML."""
     if config_path is None:
         config_path = (
             Path(__file__).resolve().parent.parent.parent
@@ -63,15 +65,14 @@ def load_active_rule(config_path: Path = None) -> ScoringRule:
     )
 
 
-# Rule loaded dynamically from config
 TOURNAMENT_RULE = load_active_rule()
 
 
 def get_trend(goals_a: int, goals_b: int) -> str:
-    """Return match trend: 'A' (win A), 'B' (win B), 'D' (draw)."""
+    """Return A for a Team A win, B for a Team B win, or D for a draw."""
     if goals_a > goals_b:
         return "A"
-    elif goals_a < goals_b:
+    if goals_a < goals_b:
         return "B"
     return "D"
 
@@ -81,45 +82,27 @@ def calculate_points(
     actual: tuple[int, int],
     rule: ScoringRule | None = None,
 ) -> int:
-    """
-    Calculate bolão points for a prediction given the actual result.
-
-    Args:
-        pred: (predicted_goals_a, predicted_goals_b)
-        actual: (actual_goals_a, actual_goals_b)
-        rule: scoring rule to use (default: TOURNAMENT_RULE)
-
-    Returns:
-        Points awarded (0, 2, 3, or 4)
-    """
+    """Calculate prediction-pool points for one predicted and actual scoreline."""
     if rule is None:
         rule = TOURNAMENT_RULE
 
     pa, pb = pred
     aa, ab = actual
 
-    # Exact score match
     if pred == actual:
         if pa == pb:
             return rule.exact_draw
-        else:
-            return rule.exact_win
+        return rule.exact_win
 
-    # Wrong trend = 0 points
     pred_trend = get_trend(pa, pb)
     actual_trend = get_trend(aa, ab)
-
     if pred_trend != actual_trend:
         return 0
 
-    # Correct trend, but not exact score
     if aa == ab:
-        # Draw: trend is correct (both predicted draw), score is wrong
         return rule.trend_draw
 
-    # Win: check if goal difference matches
     if (pa - pb) == (aa - ab):
         return rule.diff_win
 
-    # Only trend correct
     return rule.trend_win
