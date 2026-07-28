@@ -1,6 +1,4 @@
-"""
-Momentum Tracker — Injects recent form (proxy for xG momentum) into Team Strength.
-"""
+"""Momentum tracker — apply recent form as a lightweight proxy for xG momentum."""
 
 import csv
 from pathlib import Path
@@ -9,12 +7,10 @@ PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
 
 def apply_momentum(
-    strengths: dict, form_path: Path = PROJECT_ROOT / "data" / "recent_form.csv"
+    strengths: dict,
+    form_path: Path = PROJECT_ROOT / "data" / "recent_form.csv",
 ) -> None:
-    """
-    Reads recent form modifiers from a CSV and applies them to the TeamStrength objects.
-    The form modifier is a value between -0.3 and +0.3.
-    """
+    """Read recent-form modifiers from CSV and apply them to team strengths."""
     if not form_path.exists():
         return
 
@@ -26,10 +22,9 @@ def apply_momentum(
                 try:
                     modifier = float(row["form_modifier"])
                     if team in strengths:
-                        # Cap modifier between -0.3 and 0.3
                         modifier = max(-0.3, min(0.3, modifier))
                         strengths[team].form = modifier
                 except ValueError:
                     pass
-    except Exception as e:
-        print(f"⚠ Erro ao aplicar momentum: {e}")
+    except Exception as exc:
+        print(f"⚠ Could not apply the momentum adjustment: {exc}")
