@@ -1,4 +1,5 @@
-# Base de Dados Curada: Top Strikers (Goalshare, Assistshare e Minutes)
+# Curated sample dataset: leading forwards and creators
+# Fields cover goal share, assist share, expected minutes, and penalty-taking duties.
 players:
   - name: "Kylian Mbappé"
     team: "France"
