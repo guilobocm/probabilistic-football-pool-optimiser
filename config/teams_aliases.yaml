@@ -1,5 +1,6 @@
-# Mapeamento canónico de nomes de seleções
-# Cada seleção tem um nome canónico e uma lista de aliases
+# Canonical national-team name mapping
+# Each team has one canonical English name and a list of recognised aliases.
+# Aliases include common English variants, official local names, and federation codes.
 
 teams:
   Argentina:
@@ -10,92 +11,92 @@ teams:
   Australia:
     code: AUS
     confederation: AFC
-    aliases: ["Australia", "AUS", "Austrália"]
+    aliases: ["Australia", "AUS"]
 
   Belgium:
     code: BEL
     confederation: UEFA
-    aliases: ["Belgium", "BEL", "Bélgica", "België"]
+    aliases: ["Belgium", "BEL", "België"]
 
   Bolivia:
     code: BOL
     confederation: CONMEBOL
-    aliases: ["Bolivia", "BOL", "Bolívia"]
+    aliases: ["Bolivia", "BOL"]
 
   Brazil:
     code: BRA
     confederation: CONMEBOL
-    aliases: ["Brazil", "BRA", "Brasil", "Seleção Brasileira"]
+    aliases: ["Brazil", "BRA"]
 
   Cameroon:
     code: CMR
     confederation: CAF
-    aliases: ["Cameroon", "CMR", "Camarões", "Cameroun"]
+    aliases: ["Cameroon", "CMR", "Cameroun"]
 
   Canada:
     code: CAN
     confederation: CONCACAF
-    aliases: ["Canada", "CAN", "Canadá"]
+    aliases: ["Canada", "CAN"]
 
   Colombia:
     code: COL
     confederation: CONMEBOL
-    aliases: ["Colombia", "COL", "Colômbia"]
+    aliases: ["Colombia", "COL"]
 
   Croatia:
     code: CRO
     confederation: UEFA
-    aliases: ["Croatia", "CRO", "Croácia", "Hrvatska"]
+    aliases: ["Croatia", "CRO", "Hrvatska"]
 
   Denmark:
     code: DEN
     confederation: UEFA
-    aliases: ["Denmark", "DEN", "Dinamarca", "Danmark"]
+    aliases: ["Denmark", "DEN", "Danmark"]
 
   Ecuador:
     code: ECU
     confederation: CONMEBOL
-    aliases: ["Ecuador", "ECU", "Equador"]
+    aliases: ["Ecuador", "ECU"]
 
   Egypt:
     code: EGY
     confederation: CAF
-    aliases: ["Egypt", "EGY", "Egito", "Egipto"]
+    aliases: ["Egypt", "EGY"]
 
   England:
     code: ENG
     confederation: UEFA
-    aliases: ["England", "ENG", "Inglaterra"]
+    aliases: ["England", "ENG"]
 
   France:
     code: FRA
     confederation: UEFA
-    aliases: ["France", "FRA", "França"]
+    aliases: ["France", "FRA"]
 
   Germany:
     code: GER
     confederation: UEFA
-    aliases: ["Germany", "GER", "Alemanha", "Deutschland"]
+    aliases: ["Germany", "GER", "Deutschland"]
 
   Indonesia:
     code: IDN
     confederation: AFC
-    aliases: ["Indonesia", "IDN", "Indonésia"]
+    aliases: ["Indonesia", "IDN"]
 
   Iran:
     code: IRN
     confederation: AFC
-    aliases: ["Iran", "IRN", "Irã", "Irão"]
+    aliases: ["Iran", "IRN"]
 
   Italy:
     code: ITA
     confederation: UEFA
-    aliases: ["Italy", "ITA", "Itália", "Italia"]
+    aliases: ["Italy", "ITA", "Italia"]
 
   Japan:
     code: JPN
     confederation: AFC
-    aliases: ["Japan", "JPN", "Japão"]
+    aliases: ["Japan", "JPN"]
 
   Mexico:
     code: MEX
@@ -105,22 +106,22 @@ teams:
   Morocco:
     code: MAR
     confederation: CAF
-    aliases: ["Morocco", "MAR", "Marrocos", "Maroc"]
+    aliases: ["Morocco", "MAR", "Maroc"]
 
   Netherlands:
     code: NED
     confederation: UEFA
-    aliases: ["Netherlands", "NED", "Holanda", "Países Baixos", "Holland"]
+    aliases: ["Netherlands", "NED", "Holland", "Nederland"]
 
   Nigeria:
     code: NGA
     confederation: CAF
-    aliases: ["Nigeria", "NGA", "Nigéria"]
+    aliases: ["Nigeria", "NGA"]
 
   Norway:
     code: NOR
     confederation: UEFA
-    aliases: ["Norway", "NOR", "Noruega", "Norge"]
+    aliases: ["Norway", "NOR", "Norge"]
 
   Panama:
     code: PAN
@@ -130,17 +131,17 @@ teams:
   Paraguay:
     code: PAR
     confederation: CONMEBOL
-    aliases: ["Paraguay", "PAR", "Paraguai"]
+    aliases: ["Paraguay", "PAR"]
 
   Peru:
     code: PER
     confederation: CONMEBOL
-    aliases: ["Peru", "PER"]
+    aliases: ["Peru", "PER", "Perú"]
 
   Poland:
     code: POL
     confederation: UEFA
-    aliases: ["Poland", "POL", "Polónia", "Polska"]
+    aliases: ["Poland", "POL", "Polska"]
 
   Portugal:
     code: POR
@@ -150,17 +151,17 @@ teams:
   Qatar:
     code: QAT
     confederation: AFC
-    aliases: ["Qatar", "QAT", "Catar"]
+    aliases: ["Qatar", "QAT"]
 
   "Republic of Ireland":
     code: IRL
     confederation: UEFA
-    aliases: ["Republic of Ireland", "IRL", "Irlanda", "Ireland"]
+    aliases: ["Republic of Ireland", "IRL", "Ireland"]
 
   "Saudi Arabia":
     code: KSA
     confederation: AFC
-    aliases: ["Saudi Arabia", "KSA", "Arábia Saudita"]
+    aliases: ["Saudi Arabia", "KSA"]
 
   Senegal:
     code: SEN
@@ -170,57 +171,57 @@ teams:
   Serbia:
     code: SRB
     confederation: UEFA
-    aliases: ["Serbia", "SRB", "Sérvia"]
+    aliases: ["Serbia", "SRB", "Srbija"]
 
   Slovenia:
     code: SVN
     confederation: UEFA
-    aliases: ["Slovenia", "SVN", "Eslovénia"]
+    aliases: ["Slovenia", "SVN", "Slovenija"]
 
   "South Korea":
     code: KOR
     confederation: AFC
-    aliases: ["South Korea", "KOR", "Coreia do Sul", "Korea Republic"]
+    aliases: ["South Korea", "KOR", "Korea Republic", "Republic of Korea"]
 
   Spain:
     code: ESP
     confederation: UEFA
-    aliases: ["Spain", "ESP", "Espanha", "España"]
+    aliases: ["Spain", "ESP", "España"]
 
   Switzerland:
     code: SUI
     confederation: UEFA
-    aliases: ["Switzerland", "SUI", "Suíça", "Schweiz"]
+    aliases: ["Switzerland", "SUI", "Schweiz", "Suisse", "Svizzera"]
 
   Türkiye:
     code: TUR
     confederation: UEFA
-    aliases: ["Türkiye", "TUR", "Turquia", "Turkey"]
+    aliases: ["Türkiye", "TUR", "Turkey"]
 
   Ukraine:
     code: UKR
     confederation: UEFA
-    aliases: ["Ukraine", "UKR", "Ucrânia"]
+    aliases: ["Ukraine", "UKR", "Ukraina"]
 
   Uruguay:
     code: URU
     confederation: CONMEBOL
-    aliases: ["Uruguay", "URU", "Uruguai"]
+    aliases: ["Uruguay", "URU"]
 
   "United States":
     code: USA
     confederation: CONCACAF
-    aliases: ["United States", "USA", "EUA", "Estados Unidos", "US"]
+    aliases: ["United States", "USA", "US", "United States of America"]
 
   Uzbekistan:
     code: UZB
     confederation: AFC
-    aliases: ["Uzbekistan", "UZB", "Uzbequistão"]
+    aliases: ["Uzbekistan", "UZB", "Oʻzbekiston"]
 
   Wales:
     code: WAL
     confederation: UEFA
-    aliases: ["Wales", "WAL", "País de Gales"]
+    aliases: ["Wales", "WAL", "Cymru"]
 
   Chile:
     code: CHI
@@ -245,17 +246,17 @@ teams:
   "New Zealand":
     code: NZL
     confederation: OFC
-    aliases: ["New Zealand", "NZL", "Nova Zelândia"]
+    aliases: ["New Zealand", "NZL", "Aotearoa"]
 
   "Trinidad and Tobago":
     code: TRI
     confederation: CONCACAF
-    aliases: ["Trinidad and Tobago", "TRI", "Trinidad e Tobago"]
+    aliases: ["Trinidad and Tobago", "TRI"]
 
   Tunisia:
     code: TUN
     confederation: CAF
-    aliases: ["Tunisia", "TUN", "Tunísia"]
+    aliases: ["Tunisia", "TUN"]
 
   Venezuela:
     code: VEN
@@ -265,17 +266,17 @@ teams:
   Ghana:
     code: GHA
     confederation: CAF
-    aliases: ["Ghana", "GHA", "Gana"]
+    aliases: ["Ghana", "GHA"]
 
   "DR Congo":
     code: COD
     confederation: CAF
-    aliases: ["DR Congo", "COD", "Congo DR", "RD Congo"]
+    aliases: ["DR Congo", "COD", "Congo DR", "Democratic Republic of the Congo"]
 
   "Ivory Coast":
     code: CIV
     confederation: CAF
-    aliases: ["Ivory Coast", "CIV", "Costa do Marfim", "Côte d'Ivoire"]
+    aliases: ["Ivory Coast", "CIV", "Côte d'Ivoire"]
 
   Mali:
     code: MLI
@@ -285,12 +286,12 @@ teams:
   Tanzania:
     code: TAN
     confederation: CAF
-    aliases: ["Tanzania", "TAN", "Tanzânia"]
+    aliases: ["Tanzania", "TAN"]
 
   Algeria:
     code: ALG
     confederation: CAF
-    aliases: ["Algeria", "ALG", "Argélia"]
+    aliases: ["Algeria", "ALG"]
 
   "Burkina Faso":
     code: BFA
@@ -300,9 +301,9 @@ teams:
   "South Africa":
     code: RSA
     confederation: CAF
-    aliases: ["South Africa", "RSA", "África do Sul"]
+    aliases: ["South Africa", "RSA"]
 
   Kenya:
     code: KEN
     confederation: CAF
-    aliases: ["Kenya", "KEN", "Quénia"]
+    aliases: ["Kenya", "KEN"]
