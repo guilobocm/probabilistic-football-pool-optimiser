@@ -1,0 +1,35 @@
+<svg width="100%" height="280" viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg">
+    <!-- Background -->
+    <rect width="1000" height="280" fill="#F6F8FA" rx="12"/>
+    
+    <!-- Decorative Grid / Pattern -->
+    <g stroke="#57606a" stroke-opacity="0.1" stroke-width="1">
+        <line x1="0" y1="40" x2="1000" y2="40"/>
+        <line x1="0" y1="240" x2="1000" y2="240"/>
+        <circle cx="900" cy="140" r="80" fill="none" stroke="#20C997" stroke-width="2" stroke-opacity="0.2"/>
+        <circle cx="900" cy="140" r="60" fill="none" stroke="#30C7EC" stroke-width="2" stroke-opacity="0.2"/>
+        <circle cx="900" cy="140" r="40" fill="none" stroke="#F5B942" stroke-width="2" stroke-opacity="0.2"/>
+    </g>
+
+    <!-- Content -->
+    <g font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
+        <text x="50" y="80" font-size="14" font-weight="600" fill="#30C7EC" letter-spacing="2">DECISION SCIENCE × FOOTBALL</text>
+        
+        <text x="50" y="140" font-size="42" font-weight="800" fill="#09111F">Probabilistic Football</text>
+        <text x="50" y="185" font-size="42" font-weight="800" fill="#09111F">Pool Optimizer</text>
+        
+        <text x="50" y="230" font-size="18" font-weight="400" fill="#57606a">Optimising decisions, not merely predicting scores.</text>
+        
+        <!-- Tech Pills -->
+        <g transform="translate(600, 215)">
+            <rect x="0" y="0" width="100" height="24" rx="12" fill="#20C997" fill-opacity="0.1"/>
+            <text x="50" y="16" font-size="12" font-weight="600" fill="#20C997" text-anchor="middle">Dixon–Coles</text>
+            
+            <rect x="110" y="0" width="115" height="24" rx="12" fill="#F5B942" fill-opacity="0.1"/>
+            <text x="167.5" y="16" font-size="12" font-weight="600" fill="#F5B942" text-anchor="middle">Expected Points</text>
+            
+            <rect x="235" y="0" width="95" height="24" rx="12" fill="#30C7EC" fill-opacity="0.1"/>
+            <text x="282.5" y="16" font-size="12" font-weight="600" fill="#30C7EC" text-anchor="middle">Monte Carlo</text>
+        </g>
+    </g>
+</svg>
