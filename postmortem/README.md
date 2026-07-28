@@ -1,42 +1,48 @@
-# Probabilistic Postmortem — 2026 World Cup (Group Stage)
+# Probabilistic Postmortem — FIFA World Cup 2026 Group Stage
 
-## What is this document?
+## Purpose
 
-A retrospective analysis of the performance of a probabilistic prediction system for a 2026 FIFA World Cup prediction pool, restricted to the **prospectively verifiable outputs** of the Group Stage.
+This report evaluates a probabilistic prediction system for a FIFA World Cup 2026 pool, restricted to outputs whose existence before the relevant kick-off could be corroborated through external platform metadata.
 
-## Investigated Question
+## Questions investigated
 
-> Did the model outputs, whose pre-kickoff creation date is corroborated by an external server, perform well? Did the Expected Points optimisation layer add value over the modal scoreline?
+> How well did the prospectively corroborated outputs perform? Did expected-points optimisation add realised value relative to selecting the modal scoreline?
 
-## Main Conclusion
+## Main conclusion
 
-In the Tier B subset (71 classic decisions + 4 flips from the 50-35-20 pool), the model correctly predicted the result (1X2) in 60.6% of the matches and obtained 36.6% of the maximum possible points. The Expected Points optimisation achieved an observed uplift of +10 points over the modal scoreline — this is directional evidence, but with a confidence interval including zero (95% CI: [−22, +42]).
+Within the Tier B subset, the 71 Classic Pool decisions achieved **60.6% 1X2 accuracy** and **36.6% of the maximum available points**. Expected-points optimisation produced an observed **+10-point uplift** relative to the modal scoreline, but the 95% bootstrap interval **[-22, +42]** includes zero. The evidence is directionally favourable, not statistically conclusive.
 
-## Verification Status
+## Verification status
 
 | Tier | Decisions | Description |
-|---|---|---|
-| **A** (Full pipeline) | 0 | Inputs and outputs verified |
-| **B** (Verified output) | 75 | Prospective output corroborated by platform metadata; inputs not verified |
-| **C** (Unverified) | 69 | Without external temporal corroboration |
-| **Total** | 144 | 72 matches × 2 pools |
+|---|---:|---|
+| **A — complete pipeline** | 0 | Inputs, outputs, and their binding independently verified |
+| **B — output corroborated** | 75 | Prospective output corroborated by platform metadata; inputs not independently verified |
+| **C — insufficient prospective evidence** | 69 | No sufficient external temporal corroboration |
+| **Total** | 144 | 72 matches across two pool rules |
 
-## Repository Structure
+The 75 Tier B decisions correspond to **71 unique matches**: 71 Classic Pool decisions and four documented 50-35-20 decisions.
 
-| Document | Content |
+## Report structure
+
+| Document | Contents |
 |---|---|
-| [executive_summary.md](reports/executive_summary.md) | Two-page summary |
-| [methodology_and_scope.md](reports/methodology_and_scope.md) | Definitions, metrics, and criteria |
-| [evidence_and_eligibility.md](reports/evidence_and_eligibility.md) | Evidence audit history |
-| [group_stage_scoring.md](reports/group_stage_scoring.md) | Classic Pool results |
-| [optimization_analysis.md](reports/optimization_analysis.md) | Optimisation vs. modal and 50-35-20 flips |
-| [limitations_and_threats_to_validity.md](reports/limitations_and_threats_to_validity.md) | Limitations and threats to validity |
-| [reproducibility.md](reports/reproducibility.md) | Reproduction gate and manifest |
-| [original_private_manifest.json](provenance/original_private_manifest.json) | Private artifact inventory with hashes |
-| [public_package_manifest.json](provenance/public_package_manifest.json) | Public package artifact inventory with hashes |
+| [Executive summary](reports/executive_summary.md) | Results and decision-relevant conclusions |
+| [Methodology and scope](reports/methodology_and_scope.md) | Definitions, metrics, and evidence criteria |
+| [Evidence and eligibility](reports/evidence_and_eligibility.md) | Temporal provenance audit |
+| [Group-stage scoring](reports/group_stage_scoring.md) | Classic Pool results |
+| [Optimisation analysis](reports/optimization_analysis.md) | Optimised picks versus modal scorelines and four documented flips |
+| [Limitations and threats to validity](reports/limitations_and_threats_to_validity.md) | Claims the evidence does and does not support |
+| [Reproducibility](reports/reproducibility.md) | Public reproduction boundary and source manifests |
+| [Original private manifest](provenance/original_private_manifest.json) | Historical private artefact inventory with hashes |
+| [Public package manifest](provenance/public_package_manifest.json) | Published package inventory with hashes |
 
-## How to Reproduce
+## Reproduction boundary
 
-The analytical package was generated and validated in a private audit repository. This public portfolio repository preserves the final reports, figures, hashes, methodology and source-commit provenance, but excludes private evidence and sensitive raw artefacts.
+The analytical package was generated and validated in a private audit repository. This portfolio repository preserves the final reports, figures, hashes, methodology, and source-commit provenance while excluding private evidence and sensitive raw artefacts.
 
-For details on the original reproducible pipeline (Bootstrap seed `42`, `10,000` iterations), see `reports/reproducibility.md`.
+For deterministic parameters and the public reproduction boundary, see [reproducibility.md](reports/reproducibility.md).
+
+## Naming convention
+
+Human-facing prose follows standard New Zealand English. A small number of historical filenames and schema identifiers retain their original spelling so that hashes, provenance links, and automation remain stable.
