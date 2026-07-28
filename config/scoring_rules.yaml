@@ -1,17 +1,17 @@
-# Regras de pontuação do bolão Copa 2026
+# FIFA World Cup 2026 prediction-pool scoring rules
 
 active_rule: tournament_neutral_3_draw
 
 tournament_neutral_3_draw:
-  trend_win: 2       # Acertou tendência (quem ganhou)
-  diff_win: 3        # Acertou diferença de gols
-  exact_win: 4       # Acertou placar exato
-  trend_draw: 3      # Acertou que foi empate (placar errado)
-  exact_draw: 4      # Acertou placar exato do empate
+  trend_win: 2       # Correct match outcome (winning team)
+  diff_win: 3        # Correct goal difference
+  exact_win: 4       # Correct exact scoreline
+  trend_draw: 3      # Correct draw, incorrect scoreline
+  exact_draw: 4      # Correct exact draw scoreline
 
 bonus_scoring:
-  points_per_correct: 4  # Pontos por resposta correta nos bônus
-  order_matters: false   # Ordem dos palpites não importa
+  points_per_correct: 4  # Points for each correct bonus answer
+  order_matters: false   # Bonus-pick order does not matter
 
 tiebreaker: most_exact_results
 deadline_minutes_before: 0
