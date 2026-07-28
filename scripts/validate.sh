@@ -10,6 +10,12 @@ uv run --frozen ruff check .
 echo "=== Running Ruff format check ==="
 uv run --frozen ruff format --check .
 
+echo "=== Enforcing public-language standard ==="
+uv run --frozen python scripts/check_public_language.py
+
+echo "=== Verifying public package manifest ==="
+uv run --frozen python scripts/verify_public_package_manifest.py
+
 echo "=== Running tests ==="
 uv run --frozen pytest
 

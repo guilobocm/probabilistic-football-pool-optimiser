@@ -172,7 +172,7 @@ def main():
     # 1. Audit total-goals calibration.
     results["audit_totals"] = run_step(
         "Over/Under audit (audit_totals.py)",
-        [sys.executable, "scripts/audit_totals.py"],
+        [sys.executable, "-m", "scripts.audit_totals"],
     )
 
     # 2. Validate Annexe C.

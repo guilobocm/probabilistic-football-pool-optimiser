@@ -14,18 +14,15 @@ Usage:
 
 from __future__ import annotations
 
+import argparse
 import csv
 import hashlib
 import json
 import math
 import sys
+from collections.abc import Sequence
 from datetime import datetime, timezone
 from pathlib import Path
-
-sys.stdout.reconfigure(encoding="utf-8")
-
-PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
-sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.config_loader import get_groups
 from src.ingest.data_validator import print_health_report, validate_and_aggregate_odds
@@ -39,7 +36,7 @@ from src.optimizer.pick_optimizer import PickResult, optimize_pick
 from src.optimizer.scoring_rules import ScoringRule, TOURNAMENT_RULE
 from src.simulator.tournament_sim import TournamentSimulator
 
-OUTPUT_DIR = PROJECT_ROOT / "outputs"
+sys.stdout.reconfigure(encoding="utf-8")  # type: ignore
 
 
 def generate_group_matches() -> list[dict]:
@@ -396,10 +393,32 @@ def file_hash(path: Path) -> str:
     return "N/A"
 
 
-def main() -> None:
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="World Cup 2026 Pool Optimiser")
+    parser.add_argument("--output-dir", type=Path, help="Directory to save outputs")
+    parser.add_argument("--skip-live-ingestion", action="store_true", help="Skip fetching live odds")
+    parser.add_argument("--num-simulations", type=int, default=100000, help="Number of Monte Carlo simulations")
+    parser.add_argument("--seed", type=int, default=2026, help="Random seed for simulations")
+    return parser
+
+
+def main(argv: Sequence[str] | None = None) -> int:
     """Run the complete modelling and optimisation pipeline."""
+    args = build_parser().parse_args(argv)
+    
+    if args.num_simulations <= 0:
+        print("Error: --num-simulations must be strictly positive.")
+        return 1
+
+    project_root = Path(__file__).resolve().parent.parent.parent
+    
+    if args.output_dir:
+        output_dir = args.output_dir.resolve()
+    else:
+        output_dir = project_root / "outputs"
+        
     print_banner()
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+    output_dir.mkdir(parents=True, exist_ok=True)
 
     print("📂 Loading configuration and team-strength data...")
     groups = get_groups()
@@ -416,9 +435,12 @@ def main() -> None:
     print(f"   Generated {len(matches)} fixtures")
 
     print("\n🌐 Fetching current market odds from The Odds API...")
-    run_ingestion()
+    if not args.skip_live_ingestion:
+        run_ingestion()
+    else:
+        print("   ⏭ Skipped live ingestion as requested")
 
-    odds_path = PROJECT_ROOT / "data" / "raw" / "odds_input.csv"
+    odds_path = project_root / "data" / "raw" / "odds_input.csv"
     external_probs = {}
 
     if odds_path.exists():
@@ -461,7 +483,7 @@ def main() -> None:
 
     print("\n🎰 Running the tournament Monte Carlo simulation...")
     simulator = TournamentSimulator(groups, strengths)
-    simulation_results = simulator.simulate(n_simulations=100_000, seed=2026)
+    simulation_results = simulator.simulate(n_simulations=args.num_simulations, seed=args.seed)
     print(f"   Completed {simulation_results.n_simulations:,} simulations")
     simulator.print_audit_report()
 
@@ -469,25 +491,25 @@ def main() -> None:
     bonuses = optimize_all_bonuses(simulation_results, points_per_correct=4)
 
     print("\n💾 Saving outputs...")
-    save_match_picks(picks, OUTPUT_DIR / "match_picks.csv")
-    save_bonus_picks(bonuses, OUTPUT_DIR / "bonus_picks.json")
+    save_match_picks(picks, output_dir / "match_picks.csv")
+    save_bonus_picks(bonuses, output_dir / "bonus_picks.json")
     save_simulation_summary(
         simulation_results,
-        OUTPUT_DIR / "simulation_summary.json",
+        output_dir / "simulation_summary.json",
     )
 
     manifest = {
         "version": "2.4-RC",
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "seed": 2026,
-        "n_simulations": 100_000,
+        "seed": args.seed,
+        "n_simulations": args.num_simulations,
         "input_hashes": {
             "odds_input.csv": file_hash(
-                PROJECT_ROOT / "data" / "raw" / "odds_input.csv"
+                project_root / "data" / "raw" / "odds_input.csv"
             ),
-            "players.yaml": file_hash(PROJECT_ROOT / "data" / "players.yaml"),
+            "players.yaml": file_hash(project_root / "data" / "players.yaml"),
             "recent_form.csv": file_hash(
-                PROJECT_ROOT / "data" / "recent_form.csv"
+                project_root / "data" / "recent_form.csv"
             ),
         },
         "outputs_generated": [
@@ -505,10 +527,10 @@ def main() -> None:
             "Refresh odds near kick-off to reflect injuries, line-ups, and squad news",
         ],
     }
-    with open(OUTPUT_DIR / "release_manifest.json", "w", encoding="utf-8") as f:
+    with open(output_dir / "release_manifest.json", "w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=2, ensure_ascii=False)
 
-    print(f"   Outputs saved to: {OUTPUT_DIR}")
+    print(f"   Outputs saved to: {output_dir}")
 
     print_pick_summary(picks)
     print_bonus_summary(bonuses, simulation_results)
@@ -516,12 +538,11 @@ def main() -> None:
     print("\n" + "=" * 70)
     print("  ✅ Pipeline complete")
     print("  Generated files:")
-    print(f"    📄 {OUTPUT_DIR / 'match_picks.csv'}")
-    print(f"    📄 {OUTPUT_DIR / 'bonus_picks.json'}")
-    print(f"    📄 {OUTPUT_DIR / 'simulation_summary.json'}")
-    print(f"    📄 {OUTPUT_DIR / 'release_manifest.json'}")
-    print("=" * 70)
-
-
+    print(f"    📄 {output_dir / 'match_picks.csv'}")
+    print(f"    📄 {output_dir / 'bonus_picks.json'}")
+    print(f"    📄 {output_dir / 'simulation_summary.json'}")
+    print(f"    📄 {output_dir / 'release_manifest.json'}")
+    
+    return 0
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

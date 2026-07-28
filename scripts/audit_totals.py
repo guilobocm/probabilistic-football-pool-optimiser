@@ -4,12 +4,7 @@ Audit Totals — demonstrate that Over/Under market integration actively shifts
 """
 
 import csv
-import sys
 from pathlib import Path
-
-# Add the project root to the import path.
-PROJECT_ROOT = Path(__file__).resolve().parent.parent
-sys.path.append(str(PROJECT_ROOT))
 
 from src.ingest.data_validator import validate_and_aggregate_odds
 from src.ingest.ingest_csv import load_odds_csv
@@ -20,7 +15,8 @@ from src.model.team_strength import build_default_strengths, estimate_lambdas
 
 
 def get_match_mapping():
-    picks_path = PROJECT_ROOT / "outputs" / "match_picks.csv"
+    project_root = Path(__file__).resolve().parent.parent
+    picks_path = project_root / "outputs" / "match_picks.csv"
     mapping = {}
     with open(picks_path, "r", encoding="utf-8") as f:
         reader = csv.DictReader(f)
@@ -40,7 +36,8 @@ def main():
     print("=" * 80)
 
     # 1. Load odds.
-    odds_path = PROJECT_ROOT / "data" / "raw" / "odds_input.csv"
+    project_root = Path(__file__).resolve().parent.parent
+    odds_path = project_root / "data" / "raw" / "odds_input.csv"
     if not odds_path.exists():
         print("Error: odds_input.csv was not found. Run the main pipeline first.")
         return

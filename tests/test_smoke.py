@@ -10,16 +10,22 @@ def test_run_all_and_outputs_schema(tmp_path):
     basic schema.
     """
     project_root = Path(__file__).resolve().parent.parent
-    
-    # Run the pipeline module directly using the current python executable
-    # The pipeline outputs files to outputs/ folder by default, but to avoid
-    # polluting the real outputs, we can just run it in the project root and 
-    # check the outputs folder.
-    
-    # Let's run it
+    import os
+    env = os.environ.copy()
+    env.pop("THE_ODDS_API_KEY", None)
+
+    output_dir = tmp_path / "outputs"
+
     result = subprocess.run(
-        [sys.executable, "-m", "src.pipeline.run_all"],
+        [
+            sys.executable, "-m", "src.pipeline.run_all",
+            "--output-dir", str(output_dir),
+            "--skip-live-ingestion",
+            "--num-simulations", "100",
+            "--seed", "2026"
+        ],
         cwd=str(project_root),
+        env=env,
         capture_output=True,
         text=True,
         encoding="utf-8"
@@ -28,8 +34,7 @@ def test_run_all_and_outputs_schema(tmp_path):
     # Check it passed successfully
     assert result.returncode == 0, f"Pipeline failed: {result.stderr}"
     
-    # Check that outputs are created
-    output_dir = project_root / "outputs"
+    # Check that outputs are created in tmp_path
     assert output_dir.exists(), "Outputs directory not created."
     
     match_picks = output_dir / "match_picks.csv"

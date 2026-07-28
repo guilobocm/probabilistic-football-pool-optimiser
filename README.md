@@ -95,6 +95,15 @@ The pipeline generates three files in `outputs/sample/`:
 - [x] Public schema validation
 - [x] Sanitised static postmortem
 
+To run the full suite of validations (lint, formatting, type checking, tests, demo, and manifest integrity):
+
+```bash
+# Requires a Bash environment (Git Bash, WSL, Linux, or macOS)
+bash scripts/validate.sh
+```
+
+> **Note for Windows users:** If you are using PowerShell, `validate.sh` will not run natively. You can either use Git Bash/WSL, or run the steps manually as defined in the script (e.g., `uv run pytest`, `uv run ruff check .`, etc.).
+
 ## 9. Forensic Postmortem
 
 **The model was not simply evaluated. Its predictions were forensically audited.**

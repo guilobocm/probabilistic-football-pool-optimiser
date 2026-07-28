@@ -13,19 +13,19 @@
     "dependency_lock_hash": "404cb9fa446f93028623f6e40afef3238377d7ca3277a496b88abaac146ac573"
   },
   "copied_artifacts": {
-    "PUBLICATION_NOTES.md": "7ae1dfc1dd62769948a909b2cc861573d10ca07ac29b805b7be156c75adba36e",
-    "README.md": "766bff7aeb1c3e309a2284828454e35d94ca1797dfb2d86397619bff385004c5",
+    "PUBLICATION_NOTES.md": "9e00de41fee6e99570b9a04e58c73e0b512805c1ea0738d54d1e02ae81d13447",
+    "README.md": "a52be3a3153c5c5013ebff890b12737f922dcd31b8818916381644d0f84ef4ad",
     "figures/fig1_ep_vs_realized.png": "40b032f0cd8424484e3d17e02bc5976c9859d3ca86ca67eacded1400455d36bd",
     "figures/fig2_optimization_uplift_distribution.png": "05296c0feac29ef305b7007cb37168ce29efdd4fb05c6a28186bffa437ac6b9f",
     "figures/fig3_predicted_vs_actual_goals.png": "0c16199df52a04c16be139639e52f45de23c8d5c4ccc0e37cd96a6433cc4edc9",
     "figures/fig4_eligibility_funnel.png": "1a9cd2ac4a30e5775d72722b9d5d4d2954e7d8124b616cfdd9a50028ef97e229",
-    "provenance/original_private_manifest.json": "40c13fcb1b48f7bb956e5ad54cf0cb94bd572f6c455d2d89fad97e3c1a74dd68",
-    "reports/evidence_and_eligibility.md": "cbd6f5baeec46d041a706ad3a79d88f52ed4996e270d150eee6ef4f34905b4dd",
-    "reports/executive_summary.md": "5798fd517491284b6367ae011e18624fa0251eee07d5ff018ad91170f017bfbd",
-    "reports/group_stage_scoring.md": "d171982f8dae24645cac8b7465d8b1a92673789307e635f83c50078fa2678d3f",
-    "reports/limitations_and_threats_to_validity.md": "027ee3440788f5560b728b5d330f8d550642c86c4115c5293b256cef9c2738a5",
-    "reports/methodology_and_scope.md": "9952c723520cd4625063708914676a4d6fa25051de9574658d0762f5c0bd6cee",
-    "reports/optimization_analysis.md": "559f3919ee8ea71a465c6e00ea138f302c4c582e1718a071536fb79f82ce35c4",
-    "reports/reproducibility.md": "e76ab6471794193d5d77cd4f828132651b6f3df8d551f135bbc1b8736e75e36f"
+    "provenance/original_private_manifest.json": "4e93f633fd96fecd95edf660b48b51a8ebfccfa86caf6c9cb41a161a2f3f80ab",
+    "reports/evidence_and_eligibility.md": "fb0a9eab4124bf0f4f88c415da0a2ba0c45d85e664f379cf07190db98461b053",
+    "reports/executive_summary.md": "8ed6f2d59714af9baad648aa004aa2b06ced766b37c91ceca32fb9524dd6780f",
+    "reports/group_stage_scoring.md": "5063ef983a3c1c5a09d4750ea002d9a0c7037d855f4f1ba97dec58e95284bbd6",
+    "reports/limitations_and_threats_to_validity.md": "03d04956e3c1d466636f450bde50d33f570e1c6a90a4367a3c763b324ad83262",
+    "reports/methodology_and_scope.md": "6e2dc774dc9db1c4535ebd0cceb412dc90717e46f8497b957aeddbc0b35c1f10",
+    "reports/optimization_analysis.md": "6b13ccd201d65fd10f9e621843449f1db7c09a869ee7a4b9c3d695408d9a5769",
+    "reports/reproducibility.md": "f2a0c73aa295af22012a3e16a2461e9cbcbc5fdfc55ccf7c53377e81058b098a"
   }
 }

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import re
 import sys
+import yaml
 from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
@@ -161,6 +162,21 @@ def markdown_prose_lines(text: str):
         yield line_number, prose
 
 
+def iter_yaml_prose(value, *, parent_key=None):
+    """Yield all string values from a parsed YAML object except those under 'aliases'."""
+    if parent_key == "aliases":
+        return
+
+    if isinstance(value, dict):
+        for key, child in value.items():
+            yield from iter_yaml_prose(child, parent_key=str(key))
+    elif isinstance(value, list):
+        for child in value:
+            yield from iter_yaml_prose(child, parent_key=parent_key)
+    elif isinstance(value, str):
+        yield value
+
+
 def main() -> int:
     findings: list[tuple[Path, int, str, str, str]] = []
 
@@ -170,7 +186,33 @@ def main() -> int:
         except UnicodeDecodeError:
             continue
 
+        is_yaml = path.suffix.lower() in {".yaml", ".yml"}
+        if is_yaml:
+            try:
+                parsed_yaml = yaml.safe_load(text)
+                for prose_value in iter_yaml_prose(parsed_yaml):
+                    for match in PORTUGUESE_PATTERN.finditer(prose_value):
+                        # Approximate line finding for reporting
+                        approx_line = next(
+                            (i for i, line in enumerate(text.splitlines(), start=1) 
+                             if prose_value in line), 0
+                        )
+                        findings.append(
+                            (
+                                path.relative_to(PROJECT_ROOT),
+                                approx_line,
+                                match.group(0),
+                                "translate Portuguese prose",
+                                prose_value.strip(),
+                            )
+                        )
+            except yaml.YAMLError:
+                pass
+
         for line_number, line in enumerate(text.splitlines(), start=1):
+            if is_yaml:
+                continue
+
             for match in PORTUGUESE_PATTERN.finditer(line):
                 findings.append(
                     (

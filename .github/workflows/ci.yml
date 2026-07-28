@@ -30,6 +30,12 @@ jobs:
       - name: Run Ruff format check
         run: uv run --frozen ruff format --check .
 
+      - name: Enforce public-language standard
+        run: uv run --frozen python scripts/check_public_language.py
+
+      - name: Verify public package manifest
+        run: uv run --frozen python scripts/verify_public_package_manifest.py
+
       - name: Run tests
         run: uv run --frozen pytest
 
