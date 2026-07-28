@@ -1,24 +1,24 @@
-# Fontes de dados para o modelo
+# Model data sources
 sources:
   - name: manual_odds
     type: csv
     path: data/raw/odds_input.csv
     enabled: true
-    description: "Odds 1X2 de fontes permitidas, coladas manualmente em CSV"
+    description: "Permitted 1X2 odds sources, manually supplied in CSV format"
 
   - name: external_model
     type: manual_probability_csv
     path: data/raw/external_model_probs.csv
     enabled: true
-    description: "Probabilidades de modelos externos (FGV, Opta, etc.)"
+    description: "Probabilities from external models (FGV, Opta, and similar sources)"
 
   - name: team_ratings
     type: csv
     path: data/raw/team_ratings.csv
     enabled: true
-    description: "Elo ratings, FIFA ranking, xG, xGA por seleção"
+    description: "Elo ratings, FIFA ranking, xG, and xGA by national team"
 
-# Pesos do ensemble por fase
+# Ensemble weights by tournament phase
 ensemble_weights:
   pre_tournament:
     external_odds: 0.45
