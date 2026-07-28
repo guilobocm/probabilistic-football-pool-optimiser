@@ -5,12 +5,17 @@ import sys
 import re
 from pathlib import Path
 
+
 def fail(msg):
     print(f"Error: {msg}")
     sys.exit(1)
 
+
 def is_hex_string(s, length):
-    return isinstance(s, str) and len(s) == length and bool(re.match(r'^[0-9a-fA-F]+$', s))
+    return (
+        isinstance(s, str) and len(s) == length and bool(re.match(r"^[0-9a-fA-F]+$", s))
+    )
+
 
 def main():
     print("=== Cryptographic Revelation and Verification ===")
@@ -18,11 +23,7 @@ def main():
     SCRIPT_DIR = Path(__file__).resolve().parent
     REPO_ROOT = SCRIPT_DIR.parents[1]
 
-    PUBLIC_COMMITMENT_PATH = (
-        REPO_ROOT
-        / "commitments"
-        / "world-cup-2026-pre-final.json"
-    )
+    PUBLIC_COMMITMENT_PATH = REPO_ROOT / "commitments" / "world-cup-2026-pre-final.json"
 
     # 1. Load Public Commitment
     if not PUBLIC_COMMITMENT_PATH.exists():
@@ -137,7 +138,9 @@ def main():
         actual_sha = hashlib.sha256(content).hexdigest()
 
         if actual_size != expected_size:
-            fail(f"Size mismatch for {name}. Expected: {expected_size}, Actual: {actual_size}")
+            fail(
+                f"Size mismatch for {name}. Expected: {expected_size}, Actual: {actual_size}"
+            )
 
         match = "OK" if hmac.compare_digest(actual_sha, expected_sha) else "FAIL"
         print(f"    - {name}: {match}")
@@ -148,6 +151,7 @@ def main():
             fail(f"SHA-256 mismatch for {name}.")
 
     print("\nALL VERIFICATIONS PASSED SUCCESSFULLY.")
+
 
 if __name__ == "__main__":
     main()
