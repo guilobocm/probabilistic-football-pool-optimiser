@@ -1,12 +1,12 @@
 """
-Bonus Optimizer — Optimizes picks for the bonus questions:
-1. Group winners (12 groups × 4 pts each)
-2. Semifinalists (4 pts per correct pick)
-3. Champion (4 pts)
-4. Team with top scorer (4 pts)
+Bonus Optimiser — optimise picks for four bonus-question categories:
+1. Group winners: 12 groups, four points for each correct answer
+2. Semi-finalists: four points for each correct answer
+3. Champion: four points
+4. Team represented by the Golden Boot winner: four points
 
-For individual-scoring bonuses (no order matters), pick the
-team with highest marginal probability for each slot.
+Each bonus is scored independently and order does not matter, so the optimiser
+selects the team with the highest marginal probability for each available slot.
 """
 
 from __future__ import annotations
@@ -25,28 +25,23 @@ class BonusPick:
     probability: float
     points_if_correct: int
     expected_points: float
-    alternatives: list[tuple[str, float]]  # Top alternatives
+    alternatives: list[tuple[str, float]]
 
 
 def optimize_group_winners(
     sim_results: SimulationResults,
     points_per_correct: int = 4,
 ) -> list[BonusPick]:
-    """
-    Pick the most likely winner for each of the 12 groups.
-
-    Since each correct answer gives 4 pts independently,
-    we simply pick the team with highest P(1st) in each group.
-    """
+    """Select the most likely winner of each group."""
     picks = []
 
     for group, probs in sorted(sim_results.group_winners.items()):
-        sorted_teams = sorted(probs.items(), key=lambda x: x[1], reverse=True)
+        sorted_teams = sorted(probs.items(), key=lambda item: item[1], reverse=True)
         best_team, best_prob = sorted_teams[0]
 
         picks.append(
             BonusPick(
-                question=f"Who will win Group {group}?",
+                question=f"Which team will win Group {group}?",
                 pick=best_team,
                 probability=best_prob,
                 points_if_correct=points_per_correct,
@@ -63,35 +58,28 @@ def optimize_semifinalists(
     n_picks: int = 4,
     points_per_correct: int = 4,
 ) -> list[BonusPick]:
-    """
-    Pick the 4 most likely semifinalists.
-
-    Since the scoring is 4 pts per correct pick with no order,
-    we pick the 4 teams with highest marginal P(semifinal).
-
-    NOTE: This is correct because the scoring is individual,
-    not joint. We don't need the most probable SET of 4,
-    just the 4 individually most probable.
-    """
+    """Select the teams with the highest marginal semi-final probabilities."""
     sorted_teams = sorted(
         sim_results.semifinalists.items(),
-        key=lambda x: x[1],
+        key=lambda item: item[1],
         reverse=True,
     )
 
     picks = []
-    for i in range(min(n_picks, len(sorted_teams))):
-        team, prob = sorted_teams[i]
+    for index in range(min(n_picks, len(sorted_teams))):
+        team, probability = sorted_teams[index]
         picks.append(
             BonusPick(
-                question=f"Quem chega às semifinais? (Pick {i + 1})",
+                question=f"Which team will reach the semi-finals? (Pick {index + 1})",
                 pick=team,
-                probability=prob,
+                probability=probability,
                 points_if_correct=points_per_correct,
-                expected_points=prob * points_per_correct,
-                alternatives=sorted_teams[i + 1 : i + 4]
-                if i + 1 < len(sorted_teams)
-                else [],
+                expected_points=probability * points_per_correct,
+                alternatives=(
+                    sorted_teams[index + 1 : index + 4]
+                    if index + 1 < len(sorted_teams)
+                    else []
+                ),
             )
         )
 
@@ -102,21 +90,17 @@ def optimize_champion(
     sim_results: SimulationResults,
     points_per_correct: int = 4,
 ) -> BonusPick:
-    """
-    Pick the most likely champion.
-
-    Simple: pick the team with highest P(champion).
-    """
+    """Select the team with the highest simulated championship probability."""
     sorted_teams = sorted(
         sim_results.champion.items(),
-        key=lambda x: x[1],
+        key=lambda item: item[1],
         reverse=True,
     )
 
     best_team, best_prob = sorted_teams[0]
 
     return BonusPick(
-        question="Who will be the World Champion?",
+        question="Which team will win the World Cup?",
         pick=best_team,
         probability=best_prob,
         points_if_correct=points_per_correct,
@@ -128,26 +112,21 @@ def optimize_champion(
 def optimize_golden_boot_team(
     sim_results: SimulationResults,
     points_per_correct: int = 4,
-) -> BonusPick:
-    """
-    Pick the team most likely to have the tournament's top scorer.
-
-    The bolão asks "which TEAM will the top scorer belong to?",
-    not the specific player. To solve this mathematically without player data.
-    """
+) -> BonusPick | None:
+    """Select the team most likely to be represented by the Golden Boot winner."""
     if not sim_results.golden_boot_team:
         return None
 
     sorted_teams = sorted(
         sim_results.golden_boot_team.items(),
-        key=lambda x: x[1],
+        key=lambda item: item[1],
         reverse=True,
     )
 
     best_team, best_prob = sorted_teams[0]
 
     return BonusPick(
-        question="Qual seleção terá o artilheiro do torneio?",
+        question="Which national team will be represented by the Golden Boot winner?",
         pick=best_team,
         probability=best_prob,
         points_if_correct=points_per_correct,
@@ -159,18 +138,18 @@ def optimize_golden_boot_team(
 def optimize_all_bonuses(
     sim_results: SimulationResults,
     points_per_correct: int = 4,
-) -> dict[str, list[BonusPick] | BonusPick]:
-    """
-    Optimize all bonus questions.
-
-    Returns dict with:
-        'group_winners': list of 12 BonusPick
-        'semifinalists': list of 4 BonusPick
-        'champion': single BonusPick
-    """
+) -> dict[str, list[BonusPick] | BonusPick | None]:
+    """Optimise every supported bonus-question category."""
     return {
         "group_winners": optimize_group_winners(sim_results, points_per_correct),
-        "semifinalists": optimize_semifinalists(sim_results, 4, points_per_correct),
+        "semifinalists": optimize_semifinalists(
+            sim_results,
+            4,
+            points_per_correct,
+        ),
         "champion": optimize_champion(sim_results, points_per_correct),
-        "golden_boot_team": optimize_golden_boot_team(sim_results, points_per_correct),
+        "golden_boot_team": optimize_golden_boot_team(
+            sim_results,
+            points_per_correct,
+        ),
     }
