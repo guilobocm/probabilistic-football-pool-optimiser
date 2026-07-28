@@ -16,6 +16,7 @@ import requests
 
 try:
     from dotenv import load_dotenv
+
     load_dotenv()
 except ImportError:
     pass
@@ -42,7 +43,9 @@ def match_team_to_canonical(api_team_name: str, alias_map: dict[str, str]) -> st
     return alias_map.get(key, api_team_name)
 
 
-def identify_match_id(team_a: str, team_b: str, groups: dict[str, list[str]]) -> str | None:
+def identify_match_id(
+    team_a: str, team_b: str, groups: dict[str, list[str]]
+) -> str | None:
     """
     Find the match_id (e.g., GS_A_001) for two teams if they are in the same group.
     Returns None if they don't play each other in the group stage.
@@ -67,7 +70,7 @@ def fetch_live_odds() -> list[dict[str, Any]]:
         return []
 
     print(f"🌐 Buscando odds ao vivo da API (Sport: {SPORT_KEY})...")
-    
+
     url = f"{ODDS_API_BASE}/sports/{SPORT_KEY}/odds"
     params = {
         "apiKey": api_key,
@@ -80,10 +83,10 @@ def fetch_live_odds() -> list[dict[str, Any]]:
         response = requests.get(url, params=params, timeout=15)
         response.raise_for_status()
         data = response.json()
-        print(f"✅ Recebidos {len(data)} jogos da API.")
+        print(f"✅ Received {len(data)} matches from the API.")
         return data
     except requests.exceptions.RequestException as e:
-        print(f"❌ Erro ao buscar odds da API: {e}")
+        print(f"❌ Error fetching odds from API: {e}")
         return []
 
 
@@ -94,19 +97,19 @@ def parse_and_save_odds(api_data: list[dict[str, Any]]) -> None:
 
     alias_map = load_team_aliases()
     groups = get_groups()
-    
+
     # Prepara o diretório e ficheiro
     OUTPUT_CSV.parent.mkdir(parents=True, exist_ok=True)
-    
+
     records = []
 
     for game in api_data:
         home_api = game.get("home_team", "")
         away_api = game.get("away_team", "")
-        
+
         home = match_team_to_canonical(home_api, alias_map)
         away = match_team_to_canonical(away_api, alias_map)
-        
+
         match_id = identify_match_id(home, away, groups)
         if not match_id:
             # Not a group stage match or teams not found
@@ -123,55 +126,69 @@ def parse_and_save_odds(api_data: list[dict[str, Any]]) -> None:
                     for outcome in outcomes:
                         sel_api = outcome["name"]
                         price = outcome["price"]
-                        
+
                         # Map selection name to 'team_a', 'team_b', 'draw'
-                        if sel_api == 'Draw':
-                            selection = 'draw'
+                        if sel_api == "Draw":
+                            selection = "draw"
                         else:
                             sel_canon = match_team_to_canonical(sel_api, alias_map)
                             if sel_canon == home:
-                                selection = 'team_a'
+                                selection = "team_a"
                             elif sel_canon == away:
-                                selection = 'team_b'
+                                selection = "team_b"
                             else:
-                                continue # Unknown selection
-                                
-                        records.append({
-                            "match_id": match_id,
-                            "source": f"api_{source}",
-                            "market": "1x2",
-                            "selection": selection,
-                            "decimal_odd": price,
-                            "source_type": "api"
-                        })
+                                continue  # Unknown selection
+
+                        records.append(
+                            {
+                                "match_id": match_id,
+                                "source": f"api_{source}",
+                                "market": "1x2",
+                                "selection": selection,
+                                "decimal_odd": price,
+                                "source_type": "api",
+                            }
+                        )
                 elif m["key"] == "totals":
                     outcomes = m.get("outcomes", [])
                     for outcome in outcomes:
-                        sel_api = outcome["name"] # Over or Under
+                        sel_api = outcome["name"]  # Over or Under
                         price = outcome["price"]
                         point = outcome.get("point")
-                        
+
                         if point == 2.5:
-                            selection = sel_api.lower() # over or under
-                            records.append({
-                                "match_id": match_id,
-                                "source": f"api_{source}",
-                                "market": "totals",
-                                "selection": selection,
-                                "decimal_odd": price,
-                                "source_type": "api"
-                            })
+                            selection = sel_api.lower()  # over or under
+                            records.append(
+                                {
+                                    "match_id": match_id,
+                                    "source": f"api_{source}",
+                                    "market": "totals",
+                                    "selection": selection,
+                                    "decimal_odd": price,
+                                    "source_type": "api",
+                                }
+                            )
 
     if not records:
-        print("⚠ Nenhum jogo da API correspondente à fase de grupos foi encontrado.")
+        print("⚠️ No API matches corresponding to the group stage were found.")
         return
 
     # Guarda no CSV (sobrescreve o ficheiro para ter as odds mais frescas)
     with open(OUTPUT_CSV, "w", newline="", encoding="utf-8") as f:
-        writer = csv.DictWriter(f, fieldnames=["match_id", "source", "market", "selection", "decimal_odd", "source_type"])
+        writer = csv.DictWriter(
+            f,
+            fieldnames=[
+                "match_id",
+                "source",
+                "market",
+                "selection",
+                "decimal_odd",
+                "source_type",
+            ],
+        )
         writer.writeheader()
         writer.writerows(records)
-        
+
     print(f"💾 Salvos {len(records)} registos de odds no arquivo {OUTPUT_CSV.name}.")
 
 
@@ -180,6 +197,7 @@ def run_ingestion() -> None:
     data = fetch_live_odds()
     if data:
         parse_and_save_odds(data)
+
 
 if __name__ == "__main__":
     run_ingestion()

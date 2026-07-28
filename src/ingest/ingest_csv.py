@@ -15,7 +15,6 @@ import pandas as pd
 
 from src.transform.implied_probabilities import (
     decimal_odds_to_clean_probs,
-    validate_overround,
 )
 
 
@@ -105,9 +104,13 @@ def odds_csv_to_probabilities(df: pd.DataFrame) -> pd.DataFrame:
         if not needed.issubset(set(odds.keys())):
             # Try alternative names
             alt_map = {
-                "home": "team_a", "1": "team_a",
-                "draw": "draw", "x": "draw", "X": "draw",
-                "away": "team_b", "2": "team_b",
+                "home": "team_a",
+                "1": "team_a",
+                "draw": "draw",
+                "x": "draw",
+                "X": "draw",
+                "away": "team_b",
+                "2": "team_b",
             }
             remapped = {}
             for sel, odd in odds.items():
@@ -122,14 +125,16 @@ def odds_csv_to_probabilities(df: pd.DataFrame) -> pd.DataFrame:
             clean = decimal_odds_to_clean_probs(odds)
             margin = sum(1.0 / v for v in odds.values())
 
-            records.append({
-                "match_id": match_id,
-                "source": source,
-                "p_home": clean["team_a"],
-                "p_draw": clean["draw"],
-                "p_away": clean["team_b"],
-                "overround": margin,
-            })
+            records.append(
+                {
+                    "match_id": match_id,
+                    "source": source,
+                    "p_home": clean["team_a"],
+                    "p_draw": clean["draw"],
+                    "p_away": clean["team_b"],
+                    "overround": margin,
+                }
+            )
         except (ValueError, ZeroDivisionError) as e:
             print(f"⚠ Error processing {match_id}/{source}: {e}")
 

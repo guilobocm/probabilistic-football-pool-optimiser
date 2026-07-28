@@ -17,7 +17,6 @@ from src.model.team_strength import TeamStrength, estimate_lambdas
 from src.model.poisson_model import (
     dixon_coles_correction,
     score_matrix_to_dict,
-    get_1x2_from_matrix,
 )
 from src.model.lambda_calibrator import calibrate_lambdas
 

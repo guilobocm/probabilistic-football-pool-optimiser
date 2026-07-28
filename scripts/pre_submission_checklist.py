@@ -121,8 +121,12 @@ def check_simulation_summary() -> bool:
 
     top_player = next(iter(top_scorers))
     top_team = next(iter(golden_boot_teams))
-    print(f"  Leading Golden Boot player: {top_player} ({top_scorers[top_player] * 100:.1f}%)")
-    print(f"  Leading Golden Boot team:   {top_team} ({golden_boot_teams[top_team] * 100:.1f}%)")
+    print(
+        f"  Leading Golden Boot player: {top_player} ({top_scorers[top_player] * 100:.1f}%)"
+    )
+    print(
+        f"  Leading Golden Boot team:   {top_team} ({golden_boot_teams[top_team] * 100:.1f}%)"
+    )
     print("  ✅ OK")
     return True
 

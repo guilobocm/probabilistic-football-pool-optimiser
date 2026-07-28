@@ -16,7 +16,6 @@ Where:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Optional
 
 from src.optimizer.scoring_rules import (
     ScoringRule,
@@ -28,12 +27,13 @@ from src.optimizer.scoring_rules import (
 @dataclass
 class PickResult:
     """Result of the pick optimization for a single match."""
+
     match_id: str
     team_a: str
     team_b: str
     best_pick: tuple[int, int]
     expected_points: float
-    confidence: float           # How much better than 2nd best
+    confidence: float  # How much better than 2nd best
     top_picks: list[tuple[tuple[int, int], float]]  # Top 5 picks with EP
     most_probable_score: tuple[int, int]
     most_probable_prob: float
@@ -122,8 +122,15 @@ def optimize_pick(
 
     # Generate rationale
     rationale = _generate_rationale(
-        best_pick, best_ep, most_probable_score, most_probable_prob,
-        top_picks, team_a, team_b, score_probs, rule,
+        best_pick,
+        best_ep,
+        most_probable_score,
+        most_probable_prob,
+        top_picks,
+        team_a,
+        team_b,
+        score_probs,
+        rule,
     )
 
     return PickResult(
@@ -157,11 +164,11 @@ def _generate_rationale(
 
     # Determine trend
     if pa > pb:
-        trend = f"vitória {team_a}"
+        trend = f"win {team_a}"
     elif pa < pb:
-        trend = f"vitória {team_b}"
+        trend = f"win {team_b}"
     else:
-        trend = "empate"
+        trend = "draw"
 
     parts = [
         f"Pick: {team_a} {pa}-{pb} {team_b}",
@@ -178,19 +185,14 @@ def _generate_rationale(
     # Check if draw is being picked over win
     if pa == pb and mp_a != mp_b:
         # Calculate how much draw tendency contributes
-        draw_prob = sum(
-            p for (a, b), p in score_probs.items() if a == b
-        )
+        draw_prob = sum(p for (a, b), p in score_probs.items() if a == b)
         parts.append(
-            f"Empate: P={draw_prob:.1%}, rendendo {rule.trend_draw}pts na tendência "
-            f"vs {rule.trend_win}pts para vitória — favorece empate em jogos equilibrados"
+            f"Draw: P={draw_prob:.1%}, yielding {rule.trend_draw}pts for the trend "
+            f"vs {rule.trend_win}pts for a win - favours draw in balanced matches"
         )
 
     # Show alternatives
-    alt_str = " | ".join(
-        f"{a}-{b}: {ep:.3f}"
-        for (a, b), ep in top_picks[:3]
-    )
+    alt_str = " | ".join(f"{a}-{b}: {ep:.3f}" for (a, b), ep in top_picks[:3])
     parts.append(f"Alternativas: {alt_str}")
 
     return " | ".join(parts)

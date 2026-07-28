@@ -124,8 +124,7 @@ def main():
             print("  P_over25_market       = N/A")
             print(f"  P_over25_model_before = {p_over25_before * 100:.1f}%")
             print(
-                f"  P_over25_model_after  = {p_over25_after * 100:.1f}% "
-                "(via 1X2 drift)"
+                f"  P_over25_model_after  = {p_over25_after * 100:.1f}% (via 1X2 drift)"
             )
             print("  source_used           = fallback_prior")
 

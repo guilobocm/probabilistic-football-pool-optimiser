@@ -7,14 +7,17 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
-def apply_momentum(strengths: dict, form_path: Path = PROJECT_ROOT / "data" / "recent_form.csv") -> None:
+
+def apply_momentum(
+    strengths: dict, form_path: Path = PROJECT_ROOT / "data" / "recent_form.csv"
+) -> None:
     """
     Reads recent form modifiers from a CSV and applies them to the TeamStrength objects.
     The form modifier is a value between -0.3 and +0.3.
     """
     if not form_path.exists():
         return
-        
+
     try:
         with open(form_path, "r", encoding="utf-8") as f:
             reader = csv.DictReader(f)

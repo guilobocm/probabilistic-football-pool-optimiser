@@ -17,14 +17,10 @@ Outputs:
 from __future__ import annotations
 
 import numpy as np
-import json
-from pathlib import Path
 from collections import Counter, defaultdict
 from dataclasses import dataclass
-from typing import Optional
 
 from src.model.team_strength import TeamStrength, estimate_lambdas
-from src.model.poisson_model import dixon_coles_correction
 from src.simulator.annexe_c_official import get_annexe_c_mapping
 from src.model.player_model import PlayerModel
 
@@ -32,14 +28,15 @@ from src.model.player_model import PlayerModel
 @dataclass
 class SimulationResults:
     """Aggregated results from Monte Carlo tournament simulation."""
+
     n_simulations: int
-    group_winners: dict[str, dict[str, float]]       # {group: {team: P(1st)}}
-    group_runners_up: dict[str, dict[str, float]]     # {group: {team: P(2nd)}}
-    semifinalists: dict[str, float]                    # {team: P(semifinal)}
-    finalists: dict[str, float]                        # {team: P(final)}
-    champion: dict[str, float]                         # {team: P(champion)}
-    top_scorer: dict[str, float] = None                # {player: P(top scorer)}
-    golden_boot_team: dict[str, float] = None           # {team: P(team has top scorer)}
+    group_winners: dict[str, dict[str, float]]  # {group: {team: P(1st)}}
+    group_runners_up: dict[str, dict[str, float]]  # {group: {team: P(2nd)}}
+    semifinalists: dict[str, float]  # {team: P(semifinal)}
+    finalists: dict[str, float]  # {team: P(final)}
+    champion: dict[str, float]  # {team: P(champion)}
+    top_scorer: dict[str, float] = None  # {player: P(top scorer)}
+    golden_boot_team: dict[str, float] = None  # {team: P(team has top scorer)}
 
 
 class TournamentSimulator:
@@ -58,7 +55,7 @@ class TournamentSimulator:
         self.avg_goals = avg_goals
 
         self.player_model = PlayerModel()
-        
+
         # Build player -> team lookup for golden boot team aggregation
         self._player_team_lookup: dict[str, str] = {}
         for team, players in self.player_model.team_players.items():
@@ -98,13 +95,13 @@ class TournamentSimulator:
         goals_a = rng.poisson(la)
         goals_b = rng.poisson(lb)
 
-        if goals_a > 0 and hasattr(self, 'current_sim_player_goals'):
+        if goals_a > 0 and hasattr(self, "current_sim_player_goals"):
             dist_g, dist_a = self.player_model.distribute_events(team_a, goals_a, rng)
             for p, g in dist_g.items():
                 self.current_sim_player_goals[p] += g
             for p, a in dist_a.items():
                 self.current_sim_player_assists[p] += a
-        if goals_b > 0 and hasattr(self, 'current_sim_player_goals'):
+        if goals_b > 0 and hasattr(self, "current_sim_player_goals"):
             dist_g, dist_a = self.player_model.distribute_events(team_b, goals_b, rng)
             for p, g in dist_g.items():
                 self.current_sim_player_goals[p] += g
@@ -144,8 +141,7 @@ class TournamentSimulator:
         Returns sorted list of (team, points, goal_diff, goals_scored) — 1st to 4th.
         """
         standings: dict[str, dict] = {
-            team: {"pts": 0, "gf": 0, "ga": 0, "gd": 0}
-            for team in group_teams
+            team: {"pts": 0, "gf": 0, "ga": 0, "gd": 0} for team in group_teams
         }
 
         # Round-robin: each pair plays once
@@ -178,8 +174,7 @@ class TournamentSimulator:
         )
 
         return [
-            (team, data["pts"], data["gd"], data["gf"])
-            for team, data in sorted_teams
+            (team, data["pts"], data["gd"], data["gf"]) for team, data in sorted_teams
         ]
 
     def _select_best_thirds(
@@ -195,7 +190,12 @@ class TournamentSimulator:
         """
         sorted_thirds = sorted(
             all_thirds,
-            key=lambda x: (x[1], x[2], x[3], rng.random()),  # points, goal diff, goals scored, random tiebreaker
+            key=lambda x: (
+                x[1],
+                x[2],
+                x[3],
+                rng.random(),
+            ),  # points, goal diff, goals scored, random tiebreaker
             reverse=True,
         )
         return [t[0] for t in sorted_thirds[:8]]
@@ -210,12 +210,19 @@ class TournamentSimulator:
         """
         self.n_simulations = n_simulations
         self.rng = np.random.default_rng(seed=seed)
-        
+
         # Load Annexe C
-        if not hasattr(self, 'audit_teams'):
-            self.audit_teams = ['Portugal', 'Brazil', 'Argentina', 'France', 'Spain', 'England']
+        if not hasattr(self, "audit_teams"):
+            self.audit_teams = [
+                "Portugal",
+                "Brazil",
+                "Argentina",
+                "France",
+                "Spain",
+                "England",
+            ]
         self.opponent_tracker = {
-            team: {phase: Counter() for phase in ['R32', 'R16', 'QF', 'SF']}
+            team: {phase: Counter() for phase in ["R32", "R16", "QF", "SF"]}
             for team in self.audit_teams
         }
 
@@ -260,29 +267,29 @@ class TournamentSimulator:
             # Retrieve specifically by group to ensure deterministic paths
             firsts = {g: group_standings[g][0][0] for g in group_letters}
             seconds = {g: group_standings[g][1][0] for g in group_letters}
-            
+
             team_to_group = {}
             for g in group_letters:
                 for t, _, _, _ in group_standings[g]:
                     team_to_group[t] = g
-            
+
             # The 8 group winners that face third-placed teams according to FIFA Annexe C
-            w_slots = ['A', 'B', 'D', 'E', 'G', 'I', 'K', 'L']
+            w_slots = ["A", "B", "D", "E", "G", "I", "K", "L"]
             t_groups = [team_to_group[t] for t in best_thirds]
-            
+
             # Official FIFA Annexe C allocation for 3rd placed teams
             allocation_map = get_annexe_c_mapping(t_groups)
-            
+
             # Map slots 1A, 1B, 1D, 1E, 1G, 1I, 1K, 1L to the designated third-placed teams
             # `thirds_dict` allows us to look up the Team object by group letter
             thirds_dict = {team_to_group[t]: t for t in best_thirds}
             matched_thirds = {}
             for slot_winner in w_slots:
                 slot_id = f"1{slot_winner}"
-                assigned_third_str = allocation_map[slot_id] # e.g. "3E"
+                assigned_third_str = allocation_map[slot_id]  # e.g. "3E"
                 assigned_group = assigned_third_str[1]
                 matched_thirds[slot_winner] = thirds_dict[assigned_group]
-            
+
             # R32 ordered to naturally feed into R16 matches:
             # R16 pairings are (89, 90), (91, 92), (93, 94), (95, 96)
             # Match 89: 74 vs 77
@@ -293,47 +300,42 @@ class TournamentSimulator:
             # Match 94: 81 vs 82
             # Match 95: 86 vs 88
             # Match 96: 85 vs 87
-            
+
             r32_matches = [
                 # R16 Match 89
-                (firsts['E'], matched_thirds['E']),   # Match 74
-                (firsts['I'], matched_thirds['I']),   # Match 77
-                
+                (firsts["E"], matched_thirds["E"]),  # Match 74
+                (firsts["I"], matched_thirds["I"]),  # Match 77
                 # R16 Match 90
-                (seconds['A'], seconds['B']),         # Match 73
-                (firsts['F'], seconds['C']),          # Match 75
-                
+                (seconds["A"], seconds["B"]),  # Match 73
+                (firsts["F"], seconds["C"]),  # Match 75
                 # R16 Match 91
-                (firsts['C'], seconds['F']),          # Match 76
-                (seconds['E'], seconds['I']),         # Match 78
-                
+                (firsts["C"], seconds["F"]),  # Match 76
+                (seconds["E"], seconds["I"]),  # Match 78
                 # R16 Match 92
-                (firsts['A'], matched_thirds['A']),   # Match 79
-                (firsts['L'], matched_thirds['L']),   # Match 80
-                
+                (firsts["A"], matched_thirds["A"]),  # Match 79
+                (firsts["L"], matched_thirds["L"]),  # Match 80
                 # R16 Match 93
-                (seconds['K'], seconds['L']),         # Match 83
-                (firsts['H'], seconds['J']),          # Match 84
-                
+                (seconds["K"], seconds["L"]),  # Match 83
+                (firsts["H"], seconds["J"]),  # Match 84
                 # R16 Match 94
-                (firsts['D'], matched_thirds['D']),   # Match 81
-                (firsts['G'], matched_thirds['G']),   # Match 82
-                
+                (firsts["D"], matched_thirds["D"]),  # Match 81
+                (firsts["G"], matched_thirds["G"]),  # Match 82
                 # R16 Match 95
-                (firsts['J'], seconds['H']),          # Match 86
-                (seconds['D'], seconds['G']),         # Match 88
-                
+                (firsts["J"], seconds["H"]),  # Match 86
+                (seconds["D"], seconds["G"]),  # Match 88
                 # R16 Match 96
-                (firsts['B'], matched_thirds['B']),   # Match 85
-                (firsts['K'], matched_thirds['K']),   # Match 87
+                (firsts["B"], matched_thirds["B"]),  # Match 85
+                (firsts["K"], matched_thirds["K"]),  # Match 87
             ]
 
             # ============ ROUND OF 32 → ROUND OF 16 ============
             r16_winners = []
             for ta, tb in r32_matches:
-                if ta in self.audit_teams: self.opponent_tracker[ta]['R32'][tb] += 1
-                if tb in self.audit_teams: self.opponent_tracker[tb]['R32'][ta] += 1
-                
+                if ta in self.audit_teams:
+                    self.opponent_tracker[ta]["R32"][tb] += 1
+                if tb in self.audit_teams:
+                    self.opponent_tracker[tb]["R32"][ta] += 1
+
                 if ta == "TBD" or tb == "TBD":
                     r16_winners.append(ta if tb == "TBD" else tb)
                     continue
@@ -344,9 +346,11 @@ class TournamentSimulator:
             qf_matches = [(r16_winners[i], r16_winners[i + 1]) for i in range(0, 16, 2)]
             qf_winners = []
             for ta, tb in qf_matches:
-                if ta in self.audit_teams: self.opponent_tracker[ta]['R16'][tb] += 1
-                if tb in self.audit_teams: self.opponent_tracker[tb]['R16'][ta] += 1
-                
+                if ta in self.audit_teams:
+                    self.opponent_tracker[ta]["R16"][tb] += 1
+                if tb in self.audit_teams:
+                    self.opponent_tracker[tb]["R16"][ta] += 1
+
                 _, _, winner = self._simulate_match(ta, tb, self.rng, allow_draw=False)
                 qf_winners.append(winner)
 
@@ -354,9 +358,11 @@ class TournamentSimulator:
             sf_matches = [(qf_winners[i], qf_winners[i + 1]) for i in range(0, 8, 2)]
             sf_winners = []
             for ta, tb in sf_matches:
-                if ta in self.audit_teams: self.opponent_tracker[ta]['QF'][tb] += 1
-                if tb in self.audit_teams: self.opponent_tracker[tb]['QF'][ta] += 1
-                
+                if ta in self.audit_teams:
+                    self.opponent_tracker[ta]["QF"][tb] += 1
+                if tb in self.audit_teams:
+                    self.opponent_tracker[tb]["QF"][ta] += 1
+
                 _, _, winner = self._simulate_match(ta, tb, self.rng, allow_draw=False)
                 sf_winners.append(winner)
 
@@ -365,15 +371,20 @@ class TournamentSimulator:
                 semifinal_counts[team] += 1
 
             # ============ SEMI FINALS → FINAL ============
-            final_match = [(sf_winners[0], sf_winners[1]), (sf_winners[2], sf_winners[3])]
+            final_match = [
+                (sf_winners[0], sf_winners[1]),
+                (sf_winners[2], sf_winners[3]),
+            ]
             finalists = []
             for ta, tb in final_match:
-                if ta in self.audit_teams: self.opponent_tracker[ta]['SF'][tb] += 1
-                if tb in self.audit_teams: self.opponent_tracker[tb]['SF'][ta] += 1
-                
+                if ta in self.audit_teams:
+                    self.opponent_tracker[ta]["SF"][tb] += 1
+                if tb in self.audit_teams:
+                    self.opponent_tracker[tb]["SF"][ta] += 1
+
                 _, _, winner = self._simulate_match(ta, tb, self.rng, allow_draw=False)
                 finalists.append(winner)
-            
+
             for f in finalists:
                 finalist_counts[f] += 1
 
@@ -384,7 +395,11 @@ class TournamentSimulator:
 
             if self.current_sim_player_goals:
                 # === INDIVIDUAL TOP SCORER (excludes Outros) ===
-                valid_players = {p: g for p, g in self.current_sim_player_goals.items() if not p.startswith("Outros")}
+                valid_players = {
+                    p: g
+                    for p, g in self.current_sim_player_goals.items()
+                    if not p.startswith("Outros")
+                }
                 if valid_players:
                     top_players_sorted = sorted(
                         valid_players.keys(),
@@ -392,13 +407,13 @@ class TournamentSimulator:
                             valid_players[p],
                             self.current_sim_player_assists.get(p, 0),
                             -self.player_model.player_minutes.get(p, 90),
-                            self.rng.random()
+                            self.rng.random(),
                         ),
-                        reverse=True
+                        reverse=True,
                     )
                     top_player = top_players_sorted[0]
                     top_scorer_counts[top_player] += 1
-                    
+
                     # === GOLDEN BOOT TEAM (derived from the same individual winner) ===
                     # The bolão asks "which TEAM will have the top scorer?"
                     # This must be the team of the actual individual winner,
@@ -446,16 +461,18 @@ class TournamentSimulator:
 
     def print_audit_report(self):
         print("\n🔎 AUDITORIA DE CAMINHOS (Opponent Tracker)")
-        print("   Nota: Terceiros alocados usando a tabela oficial Annexe C (495 combinações).")
+        print(
+            "   Nota: Terceiros alocados usando a tabela oficial Annexe C (495 combinações)."
+        )
         for team in self.audit_teams:
             print(f"\n   [{team}]")
-            for phase in ['R32', 'R16', 'QF', 'SF']:
+            for phase in ["R32", "R16", "QF", "SF"]:
                 counts = self.opponent_tracker[team][phase]
                 if counts:
                     # Imprimir toda a lista ordenada para provar ausência de viés
                     opponents = counts.most_common()
                     print(f"      {phase}:")
                     for opp, c in opponents:
-                        print(f"         - {opp}: {c/self.n_simulations*100:.1f}%")
+                        print(f"         - {opp}: {c / self.n_simulations * 100:.1f}%")
                 else:
                     print(f"      {phase}: N/A")

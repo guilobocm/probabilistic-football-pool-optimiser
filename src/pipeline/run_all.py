@@ -18,23 +18,23 @@ import csv
 import json
 import math
 import sys
+
+sys.stdout.reconfigure(encoding="utf-8")
+
 from datetime import datetime, timezone
 from pathlib import Path
 
-import pandas as pd
 
 # Add project root to path
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.config_loader import get_groups, get_scoring_rule, get_all_teams
+from src.config_loader import get_groups
 from src.model.team_strength import build_default_strengths, TeamStrength
 from src.model.score_matrix import generate_score_matrix
-from src.model.poisson_model import get_1x2_from_matrix, dixon_coles_correction
-from src.model.team_strength import estimate_lambdas
 from src.optimizer.scoring_rules import ScoringRule, TOURNAMENT_RULE
 from src.optimizer.pick_optimizer import optimize_pick, PickResult
-from src.optimizer.bonus_optimizer import optimize_all_bonuses, BonusPick
+from src.optimizer.bonus_optimizer import optimize_all_bonuses
 from src.simulator.tournament_sim import TournamentSimulator
 from src.ingest.odds_api_client import run_ingestion
 from src.ingest.ingest_csv import load_odds_csv
@@ -53,13 +53,15 @@ def generate_group_matches() -> list[dict]:
     for group_letter, teams in sorted(groups.items()):
         for i in range(len(teams)):
             for j in range(i + 1, len(teams)):
-                matches.append({
-                    "match_id": f"GS_{group_letter}_{match_num:03d}",
-                    "group": group_letter,
-                    "team_a": teams[i],
-                    "team_b": teams[j],
-                    "stage": "group",
-                })
+                matches.append(
+                    {
+                        "match_id": f"GS_{group_letter}_{match_num:03d}",
+                        "group": group_letter,
+                        "team_a": teams[i],
+                        "team_b": teams[j],
+                        "stage": "group",
+                    }
+                )
                 match_num += 1
 
     return matches
@@ -120,27 +122,38 @@ def save_match_picks(picks: list[PickResult], filepath: Path) -> None:
     """Save match picks to CSV."""
     with open(filepath, "w", newline="", encoding="utf-8") as f:
         writer = csv.writer(f)
-        writer.writerow([
-            "match_id", "team_a", "team_b",
-            "pick_a", "pick_b", "expected_points",
-            "confidence", "most_probable_a", "most_probable_b",
-            "most_probable_prob", "rationale",
-        ])
+        writer.writerow(
+            [
+                "match_id",
+                "team_a",
+                "team_b",
+                "pick_a",
+                "pick_b",
+                "expected_points",
+                "confidence",
+                "most_probable_a",
+                "most_probable_b",
+                "most_probable_prob",
+                "rationale",
+            ]
+        )
 
         for pick in picks:
-            writer.writerow([
-                pick.match_id,
-                pick.team_a,
-                pick.team_b,
-                pick.best_pick[0],
-                pick.best_pick[1],
-                f"{pick.expected_points:.4f}",
-                f"{pick.confidence:.4f}",
-                pick.most_probable_score[0],
-                pick.most_probable_score[1],
-                f"{pick.most_probable_prob:.4f}",
-                pick.rationale,
-            ])
+            writer.writerow(
+                [
+                    pick.match_id,
+                    pick.team_a,
+                    pick.team_b,
+                    pick.best_pick[0],
+                    pick.best_pick[1],
+                    f"{pick.expected_points:.4f}",
+                    f"{pick.confidence:.4f}",
+                    pick.most_probable_score[0],
+                    pick.most_probable_score[1],
+                    f"{pick.most_probable_prob:.4f}",
+                    pick.rationale,
+                ]
+            )
 
 
 def save_bonus_picks(bonuses: dict, filepath: Path) -> None:
@@ -150,27 +163,30 @@ def save_bonus_picks(bonuses: dict, filepath: Path) -> None:
     # Group winners
     group_picks = []
     for bp in bonuses.get("group_winners", []):
-        group_picks.append({
-            "question": bp.question,
-            "pick": bp.pick,
-            "probability": round(bp.probability, 4),
-            "expected_points": round(bp.expected_points, 4),
-            "alternatives": [
-                {"team": t, "prob": round(p, 4)}
-                for t, p in bp.alternatives[:3]
-            ],
-        })
+        group_picks.append(
+            {
+                "question": bp.question,
+                "pick": bp.pick,
+                "probability": round(bp.probability, 4),
+                "expected_points": round(bp.expected_points, 4),
+                "alternatives": [
+                    {"team": t, "prob": round(p, 4)} for t, p in bp.alternatives[:3]
+                ],
+            }
+        )
     output["group_winners"] = group_picks
 
     # Semifinalists
     sf_picks = []
     for bp in bonuses.get("semifinalists", []):
-        sf_picks.append({
-            "question": bp.question,
-            "pick": bp.pick,
-            "probability": round(bp.probability, 4),
-            "expected_points": round(bp.expected_points, 4),
-        })
+        sf_picks.append(
+            {
+                "question": bp.question,
+                "pick": bp.pick,
+                "probability": round(bp.probability, 4),
+                "expected_points": round(bp.expected_points, 4),
+            }
+        )
     output["semifinalists"] = sf_picks
 
     # Champion
@@ -182,8 +198,7 @@ def save_bonus_picks(bonuses: dict, filepath: Path) -> None:
             "probability": round(champ.probability, 4),
             "expected_points": round(champ.expected_points, 4),
             "alternatives": [
-                {"team": t, "prob": round(p, 4)}
-                for t, p in champ.alternatives[:5]
+                {"team": t, "prob": round(p, 4)} for t, p in champ.alternatives[:5]
             ],
         }
 
@@ -230,7 +245,9 @@ def save_simulation_summary(sim_results, filepath: Path) -> None:
                 key=lambda x: x[1],
                 reverse=True,
             )[:15]
-        } if sim_results.top_scorer else {},
+        }
+        if sim_results.top_scorer
+        else {},
         "golden_boot_team_probs": {
             team: round(prob, 4)
             for team, prob in sorted(
@@ -238,7 +255,9 @@ def save_simulation_summary(sim_results, filepath: Path) -> None:
                 key=lambda x: x[1],
                 reverse=True,
             )[:15]
-        } if sim_results.golden_boot_team else {},
+        }
+        if sim_results.golden_boot_team
+        else {},
     }
 
     with open(filepath, "w", encoding="utf-8") as f:
@@ -247,17 +266,17 @@ def save_simulation_summary(sim_results, filepath: Path) -> None:
 
 def print_banner():
     print("=" * 70)
-    print("  ⚽ OTIMIZADOR DE BOLÃO — COPA DO MUNDO 2026 ⚽")
-    print("  Maximizando pontuação esperada, não palpite de boteco")
+    print("  🏆 WORLD CUP 2026 POOL OPTIMISER 🏆")
+    print("  Maximising expected points, not guessing randomly")
     print("=" * 70)
     print()
 
 
 def print_pick_summary(picks: list[PickResult]):
     """Print a nice summary of match picks."""
-    print("\n📊 PALPITES OTIMIZADOS (Fase de Grupos)")
+    print("\n✅ OPTIMISED PICKS (Group Stage)")
     print("-" * 70)
-    print(f"{'Jogo':<35} {'Palpite':>8} {'EP':>8} {'Mais Provável':>15}")
+    print(f"{'Match':<35} {'Pick':>8} {'EP':>8} {'Most Likely':>15}")
     print("-" * 70)
 
     total_ep = 0
@@ -276,14 +295,14 @@ def print_pick_summary(picks: list[PickResult]):
         total_ep += pick.expected_points
 
     print("-" * 70)
-    print(f"{'Total EP esperado:':<35} {'':<8} {total_ep:>7.3f}")
-    print(f"{'Jogos:':<35} {len(picks)}")
+    print(f"{'Total expected EP:':<35} {'':<8} {total_ep:>7.3f}")
+    print(f"{'Matches:':<35} {len(picks)}")
     print()
 
 
 def print_bonus_summary(bonuses: dict, sim_results):
     """Print bonus picks summary."""
-    print("\n🏆 BÓNUS — PREVISÕES DE TORNEIO")
+    print("\n🏆 BONUS — TOURNAMENT PREDICTIONS")
     print("-" * 70)
 
     # Champion
@@ -293,35 +312,41 @@ def print_bonus_summary(bonuses: dict, sim_results):
         # Margin of Error (95% CI) = 1.96 * SE
         n_sims = sim_results.n_simulations
         moe = 1.96 * math.sqrt(champ.probability * (1 - champ.probability) / n_sims)
-        
-        print(f"\n🥇 Campeão do Mundo: {champ.pick} (P={champ.probability*100:.1f}% ± {moe*100:.2f} p.p., EP={champ.expected_points:.2f})")
+
+        print(
+            f"\n🥇 World Champion: {champ.pick} (P={champ.probability * 100:.1f}% ± {moe * 100:.2f} p.p., EP={champ.expected_points:.2f})"
+        )
         if champ.alternatives:
             alts = ", ".join(f"{t} ({p:.1%})" for t, p in champ.alternatives[:4])
-            print(f"   Alternativas: {alts}")
+            print(f"   Alternatives: {alts}")
 
     # Semifinalists
     sf_picks = bonuses.get("semifinalists", [])
     if sf_picks:
-        print(f"\n🏅 Semifinalistas:")
+        print("\n🏅 Semifinalists:")
         for bp in sf_picks:
             print(f"   {bp.pick} (P={bp.probability:.1%}, EP={bp.expected_points:.2f})")
 
     # Group winners
     gw_picks = bonuses.get("group_winners", [])
     if gw_picks:
-        print(f"\n📋 Vencedores dos Grupos:")
+        print("\n🥇 Group Winners:")
         for bp in gw_picks:
-            group_letter = bp.question.split("Grupo ")[-1].rstrip("?")
+            group_letter = bp.question.split("Group ")[-1].rstrip("?")
             alts = ", ".join(f"{t} ({p:.1%})" for t, p in bp.alternatives[:2])
-            print(f"   Grupo {group_letter}: {bp.pick} ({bp.probability:.1%}) | Alt: {alts}")
+            print(
+                f"   Group {group_letter}: {bp.pick} ({bp.probability:.1%}) | Alt: {alts}"
+            )
 
     # Golden Boot Team
     gb_team = bonuses.get("golden_boot_team")
     if gb_team:
-        print(f"\n⚽ Equipa do Artilheiro: {gb_team.pick} (P={gb_team.probability*100:.1f}%, EP={gb_team.expected_points:.2f})")
+        print(
+            f"\n⚽ Golden Boot Team: {gb_team.pick} (P={gb_team.probability * 100:.1f}%, EP={gb_team.expected_points:.2f})"
+        )
         if gb_team.alternatives:
             alts = ", ".join(f"{t} ({p:.1%})" for t, p in gb_team.alternatives[:4])
-            print(f"   Alternativas: {alts}")
+            print(f"   Alternatives: {alts}")
 
     # Total expected bonus points
     total_bonus_ep = 0
@@ -334,7 +359,7 @@ def print_bonus_summary(bonuses: dict, sim_results):
     if gb_team:
         total_bonus_ep += gb_team.expected_points
 
-    print(f"\n   Total EP bónus: {total_bonus_ep:.2f}")
+    print(f"\n   Total bonus EP: {total_bonus_ep:.2f}")
     print()
 
 
@@ -346,62 +371,68 @@ def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
 
     # ============ STEP 1: Load data ============
-    print("📂 Carregando configurações...")
+    print("📂 Loading configurations...")
     groups = get_groups()
     strengths = build_default_strengths()
     apply_momentum(strengths)
     rule = TOURNAMENT_RULE
 
-    print(f"   {len(groups)} grupos, {len(strengths)} seleções com dados de força")
+    print(f"   {len(groups)} groups, {len(strengths)} teams with strength data")
 
     # ============ STEP 2: Generate matches ============
-    print("\n⚽ Gerando jogos da fase de grupos...")
+    print("\n🔄 Generating group stage matches...")
     matches = generate_group_matches()
-    print(f"   {len(matches)} jogos gerados")
+    print(f"   {len(matches)} matches generated")
 
     # ============ STEP 2.5: Fetch Live Odds ============
-    print("\n🌐 Buscando odds em tempo real (The Odds API)...")
+    print("\n🌐 Fetching live odds (The Odds API)...")
     run_ingestion()
-    
+
     odds_path = PROJECT_ROOT / "data" / "raw" / "odds_input.csv"
     external_probs = {}
-    
+
     if odds_path.exists():
         try:
             df_odds = load_odds_csv(odds_path)
-            
+
             agg_df, report = validate_and_aggregate_odds(df_odds)
             print()
             print_health_report(report)
-            
+
             for _, row in agg_df.iterrows():
                 external_probs[row["match_id"]] = {
                     "1x2": (row["p_home"], row["p_draw"], row["p_away"]),
-                    "over_25": row.get("p_over_25")
+                    "over_25": row.get("p_over_25"),
                 }
-                    
-            print(f"   Sucesso: {len(external_probs)} jogos validados com odds incorporadas no modelo.")
+
+            print(
+                f"   Success: {len(external_probs)} matches validated with odds incorporated into the model."
+            )
         except Exception as e:
-            print(f"   ⚠ Falha ao processar CSV de odds: {e}")
+            print(f"   ⚠ Failed to process odds CSV: {e}")
 
     # ============ STEP 3: Optimize match picks ============
-    print("\n🧮 Otimizando palpites por pontuação esperada...")
-    
+    print("\n🧮 Optimising picks by expected points...")
+
     missing_matches = [m for m in matches if m["match_id"] not in external_probs]
     if missing_matches:
-        print(f"   ⚠ Atenção: {len(missing_matches)} jogos farão fallback para o Elo base (sem cobertura/rejeitados):")
+        print(
+            f"   ⚠ Note: {len(missing_matches)} matches will fallback to base Elo (no coverage/rejected):"
+        )
         for mm in missing_matches:
-            print(f"      - {mm['team_a']} vs {mm['team_b']} (source_used = base_model_fallback)")
-            
+            print(
+                f"      - {mm['team_a']} vs {mm['team_b']} (source_used = base_model_fallback)"
+            )
+
     picks = run_match_predictions(matches, strengths, rule, external_probs)
-    print(f"   {len(picks)} palpites otimizados")
+    print(f"   {len(picks)} optimised picks")
 
     # ============ STEP 4: Tournament simulation ============
-    print("\n🎰 Rodando simulação Monte Carlo do torneio...")
+    print("\n🎲 Running Monte Carlo tournament simulation...")
     simulator = TournamentSimulator(groups, strengths)
     sim_results = simulator.simulate(n_simulations=100_000, seed=2026)
-    print(f"   {sim_results.n_simulations:,} simulações completadas")
-    
+    print(f"   {sim_results.n_simulations:,} simulations completed")
+
     # Audit logging
     simulator.print_audit_report()
 
@@ -414,21 +445,24 @@ def main():
     save_match_picks(picks, OUTPUT_DIR / "match_picks.csv")
     save_bonus_picks(bonuses, OUTPUT_DIR / "bonus_picks.json")
     save_simulation_summary(sim_results, OUTPUT_DIR / "simulation_summary.json")
-    
+
     # Save release manifest
     import hashlib
+
     def file_hash(path):
         if path.exists():
             return hashlib.md5(path.read_bytes()).hexdigest()
         return "N/A"
-    
+
     manifest = {
         "version": "2.4-RC",
         "timestamp": datetime.now(timezone.utc).isoformat(),
         "seed": 2026,
         "n_simulations": 100_000,
         "input_hashes": {
-            "odds_input.csv": file_hash(PROJECT_ROOT / "data" / "raw" / "odds_input.csv"),
+            "odds_input.csv": file_hash(
+                PROJECT_ROOT / "data" / "raw" / "odds_input.csv"
+            ),
             "players.yaml": file_hash(PROJECT_ROOT / "data" / "players.yaml"),
             "recent_form.csv": file_hash(PROJECT_ROOT / "data" / "recent_form.csv"),
         },
@@ -441,16 +475,16 @@ def main():
         "matches_with_market_odds": 66,
         "matches_with_fallback": 6,
         "model_notes": [
-            "Artilheiro: modelo experimental (golos + assists + minutos)",
-            "Desempates: aproximação estatística (Pts > GD > GF > noise)",
-            "Momentum: proxy leve via recent_form.csv, não xG real",
-            "6 jogos usam base_model_fallback (Chéquia, Bósnia)",
-            "Actualizar odds perto dos jogos para refletir lesões/escalações",
+            "Golden boot: experimental model (goals + assists + minutes)",
+            "Tiebreakers: statistical approximation (Pts > GD > GF > noise)",
+            "Momentum: light proxy via recent_form.csv, not actual xG",
+            "6 matches use base_model_fallback (Czechia, Bosnia)",
+            "Update odds close to matches to reflect injuries/lineups",
         ],
     }
     with open(OUTPUT_DIR / "release_manifest.json", "w", encoding="utf-8") as f:
         json.dump(manifest, f, indent=2, ensure_ascii=False)
-    
+
     print(f"   Resultados salvos em: {OUTPUT_DIR}")
 
     # ============ STEP 7: Print summaries ============
@@ -458,8 +492,8 @@ def main():
     print_bonus_summary(bonuses, sim_results)
 
     print("\n" + "=" * 70)
-    print("  ✅ Pipeline completo!")
-    print("  Arquivos gerados:")
+    print("  ✅ Pipeline complete!")
+    print("  Generated files:")
     print(f"    📄 {OUTPUT_DIR / 'match_picks.csv'}")
     print(f"    📄 {OUTPUT_DIR / 'bonus_picks.json'}")
     print(f"    📄 {OUTPUT_DIR / 'simulation_summary.json'}")

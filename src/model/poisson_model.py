@@ -12,7 +12,6 @@ from __future__ import annotations
 
 import numpy as np
 from scipy.stats import poisson
-from typing import Optional
 
 
 # Maximum goals to consider per team in score matrix

@@ -133,8 +133,8 @@ def validate_and_aggregate_odds(
         report["mean_std_dev"] = float(std_df["max_std"].mean())
 
         valid_std_ids = std_df[std_df["max_std"] <= max_std_dev].index
-        report["matches_dropped_high_std"] = (
-            len(df_final["match_id"].unique()) - len(valid_std_ids)
+        report["matches_dropped_high_std"] = len(df_final["match_id"].unique()) - len(
+            valid_std_ids
         )
         df_final = df_final[df_final["match_id"].isin(valid_std_ids)].copy()
 

@@ -7,8 +7,6 @@ Supports 1X2, over/under, and exact score markets.
 
 from __future__ import annotations
 
-from typing import Optional
-
 
 def decimal_odds_to_clean_probs(
     odds: dict[str, float],
@@ -44,10 +42,7 @@ def decimal_odds_to_clean_probs(
     if total <= 0:
         raise ValueError("Invalid total implied probability.")
 
-    return {
-        selection: prob / total
-        for selection, prob in raw_probs.items()
-    }
+    return {selection: prob / total for selection, prob in raw_probs.items()}
 
 
 def overround(odds: dict[str, float]) -> float:
@@ -74,11 +69,13 @@ def odds_1x2_to_probs(
 
     Returns (p_home, p_draw, p_away) with margin removed.
     """
-    clean = decimal_odds_to_clean_probs({
-        "home": odd_home,
-        "draw": odd_draw,
-        "away": odd_away,
-    })
+    clean = decimal_odds_to_clean_probs(
+        {
+            "home": odd_home,
+            "draw": odd_draw,
+            "away": odd_away,
+        }
+    )
     return clean["home"], clean["draw"], clean["away"]
 
 
@@ -91,10 +88,12 @@ def over_under_to_probs(
 
     Returns (p_over, p_under) with margin removed.
     """
-    clean = decimal_odds_to_clean_probs({
-        "over": odd_over,
-        "under": odd_under,
-    })
+    clean = decimal_odds_to_clean_probs(
+        {
+            "over": odd_over,
+            "under": odd_under,
+        }
+    )
     return clean["over"], clean["under"]
 
 
@@ -141,9 +140,9 @@ def aggregate_probabilities(
             sorted_vals = sorted(values)
             n = len(sorted_vals)
             if n % 2 == 0:
-                aggregated[key] = (sorted_vals[n//2 - 1] + sorted_vals[n//2]) / 2
+                aggregated[key] = (sorted_vals[n // 2 - 1] + sorted_vals[n // 2]) / 2
             else:
-                aggregated[key] = sorted_vals[n//2]
+                aggregated[key] = sorted_vals[n // 2]
 
         elif method == "trimmed_mean":
             sorted_vals = sorted(values)
@@ -190,6 +189,6 @@ def calculate_dispersion(sources: list[dict[str, float]]) -> dict[str, float]:
 
         mean = sum(values) / len(values)
         variance = sum((v - mean) ** 2 for v in values) / len(values)
-        dispersion[key] = variance ** 0.5  # std dev
+        dispersion[key] = variance**0.5  # std dev
 
     return dispersion

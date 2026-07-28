@@ -14,27 +14,22 @@ TEST_CASES = [
     ("Argentina", "Curaçao", 3.1, 0.4, (0.85, 0.10, 0.05)),
     ("France", "Haiti", 2.9, 0.5, (0.80, 0.15, 0.05)),
     ("Spain", "Cape Verde", 2.8, 0.6, (0.75, 0.18, 0.07)),
-
     # Strong teams against mid-tier opposition
     ("Brazil", "Scotland", 2.2, 0.8, (0.60, 0.25, 0.15)),
     ("England", "Ghana", 2.0, 0.9, (0.55, 0.28, 0.17)),
     ("Germany", "Ecuador", 1.9, 1.0, (0.50, 0.30, 0.20)),
-
     # Balanced or traditionally competitive fixtures
     ("Mexico", "South Korea", 1.4, 1.3, (0.38, 0.32, 0.30)),
     ("Portugal", "Colombia", 1.6, 1.4, (0.42, 0.30, 0.28)),
     ("Netherlands", "Sweden", 1.5, 1.4, (0.40, 0.31, 0.29)),
     ("Japan", "Switzerland", 1.2, 1.3, (0.33, 0.33, 0.34)),
-
     # Large Elo-market disagreements
     # Elo favours Team A, while the market is approximately balanced.
     ("United States", "Paraguay", 2.1, 0.9, (0.40, 0.30, 0.30)),
     # Elo is approximately balanced, while the market strongly favours Team A.
     ("Belgium", "Iran", 1.3, 1.2, (0.65, 0.22, 0.13)),
-
     # Market underdog with a comparatively stronger Elo prior
     ("Australia", "Türkiye", 1.5, 1.1, (0.20, 0.25, 0.55)),
-
     # Very low- and high-scoring priors
     # Low total: 1.0 + 0.9 = 1.9 expected goals.
     ("Senegal", "Iraq", 1.0, 0.9, (0.45, 0.35, 0.20)),

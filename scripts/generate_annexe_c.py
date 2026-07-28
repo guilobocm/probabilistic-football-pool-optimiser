@@ -43,9 +43,7 @@ def generate_annexe_c():
             raise ValueError(f"Could not find a valid assignment for {combo}")
 
         key = "-".join(sorted(combo))
-        mapping = {
-            f"1{target_slots[i]}": f"3{valid_assignment[i]}" for i in range(8)
-        }
+        mapping = {f"1{target_slots[i]}": f"3{valid_assignment[i]}" for i in range(8)}
         annexe_c[key] = mapping
 
     output_path = (
@@ -55,10 +53,7 @@ def generate_annexe_c():
     with open(output_path, "w", encoding="utf-8") as f:
         json.dump(annexe_c, f, indent=4)
 
-    print(
-        f"✅ Generated {len(annexe_c)} Annexe C combinations in "
-        f"{output_path.name}."
-    )
+    print(f"✅ Generated {len(annexe_c)} Annexe C combinations in {output_path.name}.")
 
 
 if __name__ == "__main__":
