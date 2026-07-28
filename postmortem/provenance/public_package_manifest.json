@@ -5,6 +5,13 @@
   "publication_generated_at_utc": "2026-07-28T18:35:26.132548+00:00",
   "translation_status": "NZ_English",
   "reproducibility_scope": "static_report_package",
+  "deterministic_sample_generation": {
+    "command": "python -m src.pipeline.run_all",
+    "seed": 2026,
+    "n_simulations": 100000,
+    "python_version": "3.13.14",
+    "dependency_lock_hash": "404cb9fa446f93028623f6e40afef3238377d7ca3277a496b88abaac146ac573"
+  },
   "copied_artifacts": {
     "PUBLICATION_NOTES.md": "7ae1dfc1dd62769948a909b2cc861573d10ca07ac29b805b7be156c75adba36e",
     "README.md": "766bff7aeb1c3e309a2284828454e35d94ca1797dfb2d86397619bff385004c5",
