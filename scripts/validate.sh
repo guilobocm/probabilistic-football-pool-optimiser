@@ -1,18 +1,25 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-echo "=== Running Validation Checks ==="
+echo "=== Installing locked dependencies ==="
+uv sync --locked --all-groups
 
-echo "[1/4] Running Ruff Check (Linting)..."
-uv run ruff check .
+echo "=== Running Ruff lint ==="
+uv run --frozen ruff check .
 
-echo "[2/4] Running Ruff Format (Formatting)..."
-uv run ruff format --check .
+echo "=== Running Ruff format check ==="
+uv run --frozen ruff format --check .
 
-echo "[3/4] Running Pytest (Unit Tests)..."
-uv run pytest
+echo "=== Running tests ==="
+uv run --frozen pytest
 
-echo "[4/4] Running Mypy (Type Checking)..."
-uv run mypy src
+echo "=== Running mypy ==="
+uv run --frozen mypy src
 
-echo "=== All Checks Passed! ==="
+echo "=== Running synthetic demo ==="
+uv run --frozen python -m examples.synthetic_four_team_tournament
+
+echo "=== Verifying clean working tree ==="
+git diff --exit-code
+
+echo "=== All validation checks passed ==="
