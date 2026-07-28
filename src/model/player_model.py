@@ -1,11 +1,10 @@
-"""
-Player Model — Simulates player goals and assists given team goals.
-"""
+"""Player model — simulate player goals and assists from team goal totals."""
 
-from typing import Dict, List
-import yaml
 from pathlib import Path
+from typing import Dict, List
+
 import numpy as np
+import yaml
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent.parent
 
@@ -16,13 +15,12 @@ class PlayerModel:
         if data_path.exists():
             with open(data_path, "r", encoding="utf-8") as f:
                 data = yaml.safe_load(f)
-                for p in data.get("players", []):
-                    team = p["team"]
+                for player in data.get("players", []):
+                    team = player["team"]
                     if team not in self.team_players:
                         self.team_players[team] = []
-                    self.team_players[team].append(p)
+                    self.team_players[team].append(player)
 
-        # Normalize shares
         self.team_goal_distributions = {}
         self.team_assist_distributions = {}
         self.player_minutes = {}
@@ -31,68 +29,77 @@ class PlayerModel:
             names = []
             goal_probs = []
             assist_probs = []
-            for p in players:
-                names.append(p["name"])
-                goal_probs.append(p.get("goalshare_pct", 0.1))
-                assist_probs.append(p.get("assist_share_pct", 0.1))
-                self.player_minutes[p["name"]] = p.get("expected_minutes", 90)
+            for player in players:
+                names.append(player["name"])
+                goal_probs.append(player.get("goalshare_pct", 0.1))
+                assist_probs.append(player.get("assist_share_pct", 0.1))
+                self.player_minutes[player["name"]] = player.get(
+                    "expected_minutes",
+                    90,
+                )
 
-            # Normalize goal probs
-            total_g = sum(goal_probs)
-            names_g, probs_g = list(names), list(goal_probs)
-            if total_g < 1.0:
-                names_g.append(f"Outros ({team})")
-                probs_g.append(1.0 - total_g)
-                self.player_minutes[f"Outros ({team})"] = 90
-            elif total_g > 1.0:
-                probs_g = [p / total_g for p in probs_g]
-            self.team_goal_distributions[team] = (names_g, probs_g)
+            total_goals_share = sum(goal_probs)
+            goal_names, normalised_goal_probs = list(names), list(goal_probs)
+            if total_goals_share < 1.0:
+                other_name = f"Other ({team})"
+                goal_names.append(other_name)
+                normalised_goal_probs.append(1.0 - total_goals_share)
+                self.player_minutes[other_name] = 90
+            elif total_goals_share > 1.0:
+                normalised_goal_probs = [
+                    probability / total_goals_share
+                    for probability in normalised_goal_probs
+                ]
+            self.team_goal_distributions[team] = (
+                goal_names,
+                normalised_goal_probs,
+            )
 
-            # Normalize assist probs
-            total_a = sum(assist_probs)
-            names_a, probs_a = list(names), list(assist_probs)
-            if total_a < 1.0:
-                names_a.append(f"Outros ({team})")
-                probs_a.append(1.0 - total_a)
-            elif total_a > 1.0:
-                probs_a = [p / total_a for p in probs_a]
-            self.team_assist_distributions[team] = (names_a, probs_a)
+            total_assist_share = sum(assist_probs)
+            assist_names, normalised_assist_probs = list(names), list(assist_probs)
+            if total_assist_share < 1.0:
+                assist_names.append(f"Other ({team})")
+                normalised_assist_probs.append(1.0 - total_assist_share)
+            elif total_assist_share > 1.0:
+                normalised_assist_probs = [
+                    probability / total_assist_share
+                    for probability in normalised_assist_probs
+                ]
+            self.team_assist_distributions[team] = (
+                assist_names,
+                normalised_assist_probs,
+            )
 
     def distribute_events(
-        self, team: str, goals: int, rng: np.random.Generator
+        self,
+        team: str,
+        goals: int,
+        rng: np.random.Generator,
     ) -> tuple[Dict[str, int], Dict[str, int]]:
-        """
-        Returns (goal_dict, assist_dict).
-        Assists are generally ~0.8 * goals.
-        """
-        goals_res = {}
-        assists_res = {}
+        """Return goal and assist counts by player for one team performance."""
+        goals_result = {}
+        assists_result = {}
         if goals == 0:
-            return goals_res, assists_res
+            return goals_result, assists_result
 
-        # Distribute Goals
         if team not in self.team_goal_distributions:
-            goals_res[f"Outros ({team})"] = goals
+            goals_result[f"Other ({team})"] = goals
         else:
-            names_g, probs_g = self.team_goal_distributions[team]
-            counts_g = rng.multinomial(goals, probs_g)
-            for name, count in zip(names_g, counts_g):
+            goal_names, goal_probs = self.team_goal_distributions[team]
+            goal_counts = rng.multinomial(goals, goal_probs)
+            for name, count in zip(goal_names, goal_counts):
                 if count > 0:
-                    goals_res[name] = count
+                    goals_result[name] = count
 
-        # Distribute Assists
-        assists = rng.poisson(0.8 * goals)
-        # Cap assists so it doesn't exceed goals wildly
-        assists = min(assists, goals)
-
+        assists = min(rng.poisson(0.8 * goals), goals)
         if assists > 0:
             if team not in self.team_assist_distributions:
-                assists_res[f"Outros ({team})"] = assists
+                assists_result[f"Other ({team})"] = assists
             else:
-                names_a, probs_a = self.team_assist_distributions[team]
-                counts_a = rng.multinomial(assists, probs_a)
-                for name, count in zip(names_a, counts_a):
+                assist_names, assist_probs = self.team_assist_distributions[team]
+                assist_counts = rng.multinomial(assists, assist_probs)
+                for name, count in zip(assist_names, assist_counts):
                     if count > 0:
-                        assists_res[name] = count
+                        assists_result[name] = count
 
-        return goals_res, assists_res
+        return goals_result, assists_result
