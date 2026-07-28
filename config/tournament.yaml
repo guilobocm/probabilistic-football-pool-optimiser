@@ -1,12 +1,12 @@
-# Copa do Mundo 2026 — Estrutura do Torneio
-# 48 seleções, 12 grupos de 4, formato expandido
+# FIFA World Cup 2026 tournament structure
+# 48 teams, 12 groups of four, expanded format
 
 tournament:
   name: "FIFA World Cup 2026"
   host_countries: ["United States", "Mexico", "Canada"]
   start_date: "2026-06-11"
   end_date: "2026-07-19"
-  neutral_venue: true  # Todos os jogos são considerados campo neutro
+  neutral_venue: true  # Every match is treated as being played at a neutral venue
 
 groups:
   A: ["Mexico", "South Africa", "South Korea", "Czechia"]
@@ -22,29 +22,29 @@ groups:
   K: ["Portugal", "DR Congo", "Uzbekistan", "Colombia"]
   L: ["England", "Croatia", "Ghana", "Panama"]
 
-# Regras de classificação na fase de grupos
+# Group-stage qualification rules
 group_stage:
   matches_per_team: 3
-  advance_top: 2          # 1º e 2º de cada grupo avançam directamente
-  advance_best_third: 8   # 8 melhores 3ºs colocados avançam
-  total_advance: 32       # 24 (top2) + 8 (best 3rd) = 32
+  advance_top: 2          # The top two teams in each group advance directly
+  advance_best_third: 8   # The eight best third-placed teams advance
+  total_advance: 32       # 24 top-two teams plus eight best third-placed teams
 
-  # Critérios de desempate (em ordem)
+  # Tie-break criteria, in order
   tiebreaker:
-    - points              # 3 pts vitória, 1 empate, 0 derrota
+    - points              # Three points for a win, one for a draw, zero for a loss
     - goal_difference
     - goals_scored
     - head_to_head_points
     - head_to_head_goal_difference
     - head_to_head_goals_scored
-    - fair_play           # cartões
+    - fair_play           # Disciplinary-card record
     - drawing_of_lots
 
-# Estrutura do mata-mata (Round of 32)
-# Baseado no formato FIFA 2026
+# Round-of-32 knockout structure
+# Based on the FIFA 2026 format
 knockout:
   round_of_32:
-    # Chave 1 (lado esquerdo)
+    # Bracket 1, left-hand side
     M49: ["1A", "3C/D/E"]
     M50: ["2C", "2D"]
     M51: ["1E", "3A/B/F"]
@@ -53,26 +53,26 @@ knockout:
     M54: ["2E", "2F"]
     M55: ["1G", "3E/F/G"]
     M56: ["2I", "2J"]
-    # Chave 2 (lado direito)
+    # Bracket 2, right-hand side
     M57: ["1B", "3C/D/F"]
     M58: ["2G", "2H"]
     M59: ["1D", "3B/E/F"]
     M60: ["2K", "2L"]
     M61: ["1F", "3A/D/E"]
-    M62: ["2I", "2J"]  # Note: bracket TBD by FIFA
+    M62: ["2I", "2J"]  # Note: bracket assignment remained subject to FIFA confirmation
     M63: ["1H", "3G/H/I"]
     M64: ["2K", "2L"]
 
-  # Etapas seguintes
-  round_of_16: 8      # 8 jogos
-  quarterfinals: 4    # 4 jogos
-  semifinals: 2       # 2 jogos
-  third_place: 1      # 1 jogo
-  final: 1            # 1 jogo
+  # Subsequent rounds
+  round_of_16: 8      # Eight matches
+  quarterfinals: 4    # Four matches
+  semifinals: 2       # Two matches
+  third_place: 1      # One match
+  final: 1            # One match
 
-# Venues e seus factores
+# Venues and contextual factors
 venues:
-  # México
+  # Mexico
   mexico_city:
     name: "Estadio Azteca"
     city: "Mexico City"
@@ -97,7 +97,7 @@ venues:
     avg_temp_june_c: 32
     avg_humidity_pct: 55
 
-  # EUA
+  # United States
   new_york:
     name: "MetLife Stadium"
     city: "East Rutherford, NJ"
@@ -186,7 +186,7 @@ venues:
     avg_temp_june_c: 22
     humidity_pct: 65
 
-  # Canadá
+  # Canada
   vancouver:
     name: "BC Place"
     city: "Vancouver, BC"
