@@ -1,16 +1,13 @@
 """
-Pick Optimizer — The brain of the system.
+Pick Optimiser — the decision engine of the system.
 
-Selects the score prediction that maximizes EXPECTED POINTS,
-not the most probable score. This is the key distinction:
+Selects the scoreline that maximises expected prediction-pool points rather
+than simply choosing the single most probable scoreline:
 
-  p* = argmax_p Σ P(r) · S(p, r)
+    p* = argmax_p Σ P(r) · S(p, r)
 
-Where:
-  p = your pick (predicted score)
-  r = each possible real result
-  P(r) = probability of result r
-  S(p, r) = points awarded if you picked p and r happened
+where p is the submitted pick, r is a possible result, P(r) is the modelled
+probability of that result, and S(p, r) is the scoring-rule payoff.
 """
 
 from __future__ import annotations
@@ -26,32 +23,27 @@ from src.optimizer.scoring_rules import (
 
 @dataclass
 class PickResult:
-    """Result of the pick optimization for a single match."""
+    """Optimisation result for one match."""
 
     match_id: str
     team_a: str
     team_b: str
     best_pick: tuple[int, int]
     expected_points: float
-    confidence: float  # How much better than 2nd best
-    top_picks: list[tuple[tuple[int, int], float]]  # Top 5 picks with EP
+    confidence: float
+    top_picks: list[tuple[tuple[int, int], float]]
     most_probable_score: tuple[int, int]
     most_probable_prob: float
     rationale: str
 
 
 def generate_candidates(max_goals: int = 5) -> list[tuple[int, int]]:
-    """
-    Generate candidate score predictions.
-
-    For World Cup matches, scores above 5-X are extremely rare.
-    We generate all permutations up to max_goals.
-    """
-    candidates = []
-    for a in range(max_goals + 1):
-        for b in range(max_goals + 1):
-            candidates.append((a, b))
-    return candidates
+    """Generate every candidate scoreline from 0-0 to max_goals–max_goals."""
+    return [
+        (goals_a, goals_b)
+        for goals_a in range(max_goals + 1)
+        for goals_b in range(max_goals + 1)
+    ]
 
 
 def expected_points(
@@ -59,20 +51,14 @@ def expected_points(
     score_probs: dict[tuple[int, int], float],
     rule: ScoringRule | None = None,
 ) -> float:
-    """
-    Calculate expected points for a specific pick.
-
-    EP(pick) = Σ P(result) * points(pick, result)
-    """
+    """Calculate expected points for one candidate scoreline."""
     if rule is None:
         rule = TOURNAMENT_RULE
 
-    ep = 0.0
-    for result, prob in score_probs.items():
-        pts = calculate_points(pick, result, rule)
-        ep += prob * pts
-
-    return ep
+    return sum(
+        probability * calculate_points(pick, result, rule)
+        for result, probability in score_probs.items()
+    )
 
 
 def optimize_pick(
@@ -83,54 +69,36 @@ def optimize_pick(
     rule: ScoringRule | None = None,
     max_goals: int = 5,
 ) -> PickResult:
-    """
-    Find the pick that maximizes expected points for a single match.
-
-    This is the core optimization:
-      p* = argmax_p EP(p)
-
-    Returns a PickResult with the best pick, EP, alternatives, and rationale.
-    """
+    """Find the expected-points-maximising pick for one match."""
     if rule is None:
         rule = TOURNAMENT_RULE
 
-    candidates = generate_candidates(max_goals)
+    ep_results = [
+        (candidate, expected_points(candidate, score_probs, rule))
+        for candidate in generate_candidates(max_goals)
+    ]
+    ep_results.sort(key=lambda item: item[1], reverse=True)
 
-    # Calculate EP for each candidate
-    ep_results: list[tuple[tuple[int, int], float]] = []
-    for candidate in candidates:
-        ep = expected_points(candidate, score_probs, rule)
-        ep_results.append((candidate, ep))
-
-    # Sort by EP descending
-    ep_results.sort(key=lambda x: x[1], reverse=True)
-
-    # Best pick
     best_pick, best_ep = ep_results[0]
-
-    # Confidence: gap between 1st and 2nd
     second_ep = ep_results[1][1] if len(ep_results) > 1 else 0.0
     confidence = best_ep - second_ep
-
-    # Top 5
     top_picks = ep_results[:5]
 
-    # Most probable score
-    most_probable = max(score_probs.items(), key=lambda x: x[1])
-    most_probable_score = most_probable[0]
-    most_probable_prob = most_probable[1]
+    most_probable_score, most_probable_prob = max(
+        score_probs.items(),
+        key=lambda item: item[1],
+    )
 
-    # Generate rationale
     rationale = _generate_rationale(
-        best_pick,
-        best_ep,
-        most_probable_score,
-        most_probable_prob,
-        top_picks,
-        team_a,
-        team_b,
-        score_probs,
-        rule,
+        best_pick=best_pick,
+        best_ep=best_ep,
+        most_probable=most_probable_score,
+        most_probable_prob=most_probable_prob,
+        top_picks=top_picks,
+        team_a=team_a,
+        team_b=team_b,
+        score_probs=score_probs,
+        rule=rule,
     )
 
     return PickResult(
@@ -158,42 +126,46 @@ def _generate_rationale(
     score_probs: dict[tuple[int, int], float],
     rule: ScoringRule,
 ) -> str:
-    """Generate human-readable rationale for the pick."""
-    pa, pb = best_pick
-    mp_a, mp_b = most_probable
+    """Generate a compact, human-readable explanation for a selected pick."""
+    pick_a, pick_b = best_pick
+    modal_a, modal_b = most_probable
 
-    # Determine trend
-    if pa > pb:
-        trend = f"win {team_a}"
-    elif pa < pb:
-        trend = f"win {team_b}"
+    if pick_a > pick_b:
+        outcome = f"{team_a} win"
+    elif pick_a < pick_b:
+        outcome = f"{team_b} win"
     else:
-        trend = "draw"
+        outcome = "draw"
 
     parts = [
-        f"Pick: {team_a} {pa}-{pb} {team_b}",
+        f"Pick: {team_a} {pick_a}-{pick_b} {team_b}",
         f"EP: {best_ep:.3f} pts",
-        f"Tendência: {trend}",
+        f"Outcome: {outcome}",
     ]
 
     if best_pick != most_probable:
         parts.append(
-            f"Placar mais provável: {mp_a}-{mp_b} ({most_probable_prob:.1%}), "
-            f"mas {pa}-{pb} maximiza EP"
+            f"Modal score: {modal_a}-{modal_b} ({most_probable_prob:.1%}), "
+            f"but {pick_a}-{pick_b} maximises EP"
         )
 
-    # Check if draw is being picked over win
-    if pa == pb and mp_a != mp_b:
-        # Calculate how much draw tendency contributes
-        draw_prob = sum(p for (a, b), p in score_probs.items() if a == b)
+    if pick_a == pick_b and modal_a != modal_b:
+        draw_probability = sum(
+            probability
+            for (goals_a, goals_b), probability in score_probs.items()
+            if goals_a == goals_b
+        )
         parts.append(
-            f"Draw: P={draw_prob:.1%}, yielding {rule.trend_draw}pts for the trend "
-            f"vs {rule.trend_win}pts for a win - favours draw in balanced matches"
+            f"Draw probability: {draw_probability:.1%}; a non-exact draw earns "
+            f"{rule.trend_draw} pts versus {rule.trend_win} pts for a non-exact "
+            "win, favouring the draw in sufficiently balanced matches"
         )
 
-    # Show alternatives
-    alt_str = " | ".join(f"{a}-{b}: {ep:.3f}" for (a, b), ep in top_picks[:3])
-    parts.append(f"Alternativas: {alt_str}")
+    alternatives = " | ".join(
+        f"{goals_a}-{goals_b}: {ep:.3f}"
+        for (goals_a, goals_b), ep in top_picks[:3]
+    )
+    parts.append(f"Alternatives: {alternatives}")
 
     return " | ".join(parts)
 
@@ -203,29 +175,21 @@ def optimize_all_matches(
     score_probs_by_match: dict[str, dict[tuple[int, int], float]],
     rule: ScoringRule | None = None,
 ) -> list[PickResult]:
-    """
-    Optimize picks for all matches.
-
-    Args:
-        matches: list of {match_id, team_a, team_b}
-        score_probs_by_match: {match_id: {(a,b): prob}}
-
-    Returns:
-        List of PickResult for each match
-    """
+    """Optimise picks for every match with an available score distribution."""
     results = []
     for match in matches:
-        mid = match["match_id"]
-        if mid not in score_probs_by_match:
+        match_id = match["match_id"]
+        if match_id not in score_probs_by_match:
             continue
 
-        result = optimize_pick(
-            match_id=mid,
-            team_a=match["team_a"],
-            team_b=match["team_b"],
-            score_probs=score_probs_by_match[mid],
-            rule=rule,
+        results.append(
+            optimize_pick(
+                match_id=match_id,
+                team_a=match["team_a"],
+                team_b=match["team_b"],
+                score_probs=score_probs_by_match[match_id],
+                rule=rule,
+            )
         )
-        results.append(result)
 
     return results
