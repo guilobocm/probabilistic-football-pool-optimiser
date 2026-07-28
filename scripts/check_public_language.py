@@ -1,4 +1,4 @@
-"""Fail when Portuguese prose appears in public, human-readable repository files."""
+"""Enforce English-only public prose and New Zealand spelling in Markdown."""
 
 from __future__ import annotations
 
@@ -57,6 +57,7 @@ PORTUGUESE_TERMS = [
     "derrota",
     "semifinalistas",
     "alternativas",
+    "outros",
     "carregando",
     "salvando",
     "buscando odds",
@@ -70,15 +71,66 @@ PORTUGUESE_TERMS = [
     "falha ao",
     "registos de odds",
     "ficheiro",
+    "arquivo",
+    "arquivos",
     "fase de grupos",
     "qual seleção",
     "quem chega",
     "mais provável",
     "maximiza",
+    "dados",
+    "resultado",
+    "resultados",
+    "probabilidade",
+    "probabilidades",
+    "grupo",
+    "grupos",
+    "gerado",
+    "gerada",
+    "gerar",
+    "aposta",
+    "apostas",
+    "correto",
+    "incorreto",
+    "salvos",
 ]
 
-PATTERN = re.compile(
+PORTUGUESE_PATTERN = re.compile(
     r"(?:" + "|".join(re.escape(term) for term in PORTUGUESE_TERMS) + r")",
+    flags=re.IGNORECASE,
+)
+
+# These replacements are checked only in Markdown prose. Code blocks, inline
+# identifiers, and link targets are stripped before scanning so historical paths
+# and stable APIs can retain their original spelling.
+US_TO_NZ = {
+    "optimization": "optimisation",
+    "optimizer": "optimiser",
+    "optimized": "optimised",
+    "optimize": "optimise",
+    "maximization": "maximisation",
+    "maximized": "maximised",
+    "maximizing": "maximising",
+    "maximize": "maximise",
+    "modeling": "modelling",
+    "behavior": "behaviour",
+    "artifact": "artefact",
+    "artifacts": "artefacts",
+    "analyzed": "analysed",
+    "analyzing": "analysing",
+    "analyze": "analyse",
+    "normalized": "normalised",
+    "normalization": "normalisation",
+    "normalize": "normalise",
+    "realized": "realised",
+    "favor": "favour",
+    "favored": "favoured",
+    "favorable": "favourable",
+    "labeled": "labelled",
+}
+
+US_PATTERN = re.compile(
+    r"\b(?:" + "|".join(re.escape(term) for term in US_TO_NZ) + r")\b",
     flags=re.IGNORECASE,
 )
 
@@ -94,8 +146,23 @@ def iter_text_files(root: Path):
         yield path
 
 
+def markdown_prose_lines(text: str):
+    """Yield Markdown lines with code and link targets removed."""
+    in_fence = False
+    for line_number, line in enumerate(text.splitlines(), start=1):
+        if line.lstrip().startswith("```"):
+            in_fence = not in_fence
+            continue
+        if in_fence:
+            continue
+
+        prose = re.sub(r"`[^`]*`", "", line)
+        prose = re.sub(r"\]\([^)]*\)", "]", prose)
+        yield line_number, prose
+
+
 def main() -> int:
-    findings: list[tuple[Path, int, str, str]] = []
+    findings: list[tuple[Path, int, str, str, str]] = []
 
     for path in iter_text_files(PROJECT_ROOT):
         try:
@@ -104,23 +171,41 @@ def main() -> int:
             continue
 
         for line_number, line in enumerate(text.splitlines(), start=1):
-            for match in PATTERN.finditer(line):
+            for match in PORTUGUESE_PATTERN.finditer(line):
                 findings.append(
                     (
                         path.relative_to(PROJECT_ROOT),
                         line_number,
                         match.group(0),
+                        "translate Portuguese prose",
                         line.strip(),
                     )
                 )
 
+        if path.suffix.lower() == ".md":
+            for line_number, prose in markdown_prose_lines(text):
+                for match in US_PATTERN.finditer(prose):
+                    replacement = US_TO_NZ[match.group(0).lower()]
+                    findings.append(
+                        (
+                            path.relative_to(PROJECT_ROOT),
+                            line_number,
+                            match.group(0),
+                            f"use New Zealand spelling: {replacement}",
+                            prose.strip(),
+                        )
+                    )
+
     if findings:
-        print("Public-language audit failed. Portuguese prose was found:\n")
-        for path, line_number, term, line in findings:
-            print(f"- {path}:{line_number}: {term!r} -> {line}")
+        print("Public-language audit failed:\n")
+        for path, line_number, term, action, line in findings:
+            print(f"- {path}:{line_number}: {term!r}; {action} -> {line}")
         return 1
 
-    print("Public-language audit passed: no targeted Portuguese prose was found.")
+    print(
+        "Public-language audit passed: no targeted Portuguese prose or "
+        "US spellings were found in public Markdown."
+    )
     return 0
 
 
