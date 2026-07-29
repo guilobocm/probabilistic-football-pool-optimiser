@@ -62,7 +62,7 @@ def generate_svg(filename, is_dark):
 def generate_social_preview(filename):
     # 1280x640 PNG
     width, height = 1280, 640
-    img = Image.new("RGB", (width, height), NAVY)
+    img = Image.new("RGBA", (width, height), NAVY)
     draw = ImageDraw.Draw(img)
 
     # Try to load a nice font, fallback to default
@@ -71,10 +71,12 @@ def generate_social_preview(filename):
         title_font = ImageFont.truetype("arialbd.ttf", 80)
         subtitle_font = ImageFont.truetype("arialbd.ttf", 36)
         label_font = ImageFont.truetype("arialbd.ttf", 24)
+        pill_font = ImageFont.truetype("arialbd.ttf", 28)
     except Exception:
         title_font = ImageFont.load_default()
         subtitle_font = ImageFont.load_default()
         label_font = ImageFont.load_default()
+        pill_font = ImageFont.load_default()
 
     # Draw label
     draw.text((100, 120), "DECISION SCIENCE × FOOTBALL", fill=CYAN, font=label_font)
@@ -87,13 +89,36 @@ def generate_social_preview(filename):
     # Draw separator
     draw.line((100, 490, 1180, 490), fill=SLATE, width=2)
 
-    # Draw footer pills / text
-    draw.text(
-        (100, 520),
-        "Dixon–Coles  •  Expected Points  •  Monte Carlo",
-        fill=GREEN,
-        font=subtitle_font,
-    )
+    # Draw footer pills
+    pills = [
+        ("Dixon–Coles", GREEN),
+        ("Expected Points", GOLD),
+        ("Monte Carlo", CYAN),
+    ]
+
+    x = 100
+    y = 530
+    padding_x = 24
+    padding_y = 12
+
+    for text, color in pills:
+        bg_color = color + "1A"
+        
+        # Calculate text size
+        bbox = draw.textbbox((0, 0), text, font=pill_font)
+        text_w = bbox[2] - bbox[0]
+        text_h = bbox[3] - bbox[1]
+        
+        rect_w = text_w + padding_x * 2
+        rect_h = text_h + padding_y * 2
+        
+        # Draw pill
+        draw.rounded_rectangle([x, y, x + rect_w, y + rect_h], radius=rect_h//2, fill=bg_color)
+        
+        # Draw text inside pill (adjusting y slightly for visual centering)
+        draw.text((x + padding_x, y + padding_y - 2), text, fill=color, font=pill_font)
+        
+        x += rect_w + 20
 
     # Draw some decorative abstract chart on the right
     draw.arc((800, 150, 1100, 450), start=180, end=360, fill=CYAN, width=15)
@@ -104,6 +129,7 @@ def generate_social_preview(filename):
     draw.text((865, 270), "100,000", fill=OFF_WHITE, font=subtitle_font)
     draw.text((870, 320), "simulations", fill=SLATE, font=label_font)
 
+    img = img.convert("RGB")
     img.save(filename)
 
 
