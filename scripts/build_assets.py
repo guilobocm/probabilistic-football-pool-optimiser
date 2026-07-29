@@ -125,9 +125,9 @@ def generate_social_preview(filename):
     draw.arc((800, 150, 1100, 450), start=0, end=90, fill=GREEN, width=15)
     draw.arc((800, 150, 1100, 450), start=90, end=180, fill=GOLD, width=15)
 
-    # Stats
-    draw.text((865, 270), "100,000", fill=OFF_WHITE, font=subtitle_font)
-    draw.text((870, 320), "simulations", fill=SLATE, font=label_font)
+    # Stats - Center is at x=950, y=300
+    draw.text((950, 280), "100,000", fill=OFF_WHITE, font=subtitle_font, anchor="mm")
+    draw.text((950, 320), "simulations", fill=SLATE, font=label_font, anchor="mm")
 
     img = img.convert("RGB")
     img.save(filename)
