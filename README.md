@@ -72,8 +72,8 @@ Evidence tiers + realised performance
 Ensure you have [uv](https://github.com/astral-sh/uv) installed, then run:
 
 ```bash
-git clone https://github.com/guilobocm/probabilistic-football-pool-optimizer.git
-cd probabilistic-football-pool-optimizer
+git clone https://github.com/guilobocm/probabilistic-football-pool-optimiser.git
+cd probabilistic-football-pool-optimiser
 uv sync --locked
 uv run python -m src.pipeline.run_all
 ```
