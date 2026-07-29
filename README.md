@@ -80,7 +80,7 @@ uv run python -m src.pipeline.run_all
 
 ## 7. Explore the Outputs
 
-The pipeline generates three files in `outputs/sample/`:
+The pipeline generates three files in `outputs/`:
 
 1. **`match_picks.csv`**: The optimal picks for every group stage match under the chosen scoring rule.
 2. **`simulation_summary.json`**: Probabilities for teams advancing, reaching the semi-finals, or winning the tournament.

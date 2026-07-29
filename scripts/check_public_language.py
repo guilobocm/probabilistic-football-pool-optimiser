@@ -17,6 +17,7 @@ TEXT_EXTENSIONS = {
     ".json",
     ".md",
     ".py",
+    ".svg",
     ".toml",
     ".txt",
     ".yaml",
@@ -250,7 +251,7 @@ def main() -> int:
                     )
                 )
 
-        if path.suffix.lower() == ".md":
+        if path.suffix.lower() in {".md", ".svg"}:
             for line_number, prose in markdown_prose_lines(text):
                 for match in US_PATTERN.finditer(prose):
                     replacement = US_TO_NZ[match.group(0).lower()]

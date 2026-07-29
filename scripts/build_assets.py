@@ -37,7 +37,7 @@ def generate_svg(filename, is_dark):
         <text x="50" y="80" font-size="14" font-weight="600" fill="{accent2}" letter-spacing="2">DECISION SCIENCE × FOOTBALL</text>
         
         <text x="50" y="140" font-size="42" font-weight="800" fill="{text_main}">Probabilistic Football</text>
-        <text x="50" y="185" font-size="42" font-weight="800" fill="{text_main}">Pool Optimizer</text>
+        <text x="50" y="185" font-size="42" font-weight="800" fill="{text_main}">Pool Optimiser</text>
         
         <text x="50" y="230" font-size="18" font-weight="400" fill="{text_sub}">Optimising decisions, not merely predicting scores.</text>
         
@@ -82,7 +82,7 @@ def generate_social_preview(filename):
     # Draw Title
     draw.text((100, 200), "PROBABILISTIC", fill=OFF_WHITE, font=title_font)
     draw.text((100, 290), "FOOTBALL POOL", fill=OFF_WHITE, font=title_font)
-    draw.text((100, 380), "OPTIMIZER", fill=OFF_WHITE, font=title_font)
+    draw.text((100, 380), "OPTIMISER", fill=OFF_WHITE, font=title_font)
 
     # Draw separator
     draw.line((100, 490, 1180, 490), fill=SLATE, width=2)
