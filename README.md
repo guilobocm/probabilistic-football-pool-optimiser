@@ -1,7 +1,7 @@
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
   <source media="(prefers-color-scheme: light)" srcset="assets/hero-light.svg">
-  <img alt="Probabilistic Football Pool Optimizer" src="assets/hero-light.svg">
+  <img alt="Probabilistic Football Pool Optimiser" src="assets/hero-light.svg">
 </picture>
 
 > A reproducible decision-science system that combines football probability models, tournament simulation and scoring-rule optimisation to choose the highest-value pool predictions.

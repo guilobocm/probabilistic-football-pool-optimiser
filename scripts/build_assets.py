@@ -10,6 +10,7 @@ OFF_WHITE = "#F6F8FA"
 SLATE = "#8B949E"
 DARK_SLATE = "#161b22"
 
+
 def generate_svg(filename, is_dark):
     bg_color = NAVY if is_dark else OFF_WHITE
     text_main = OFF_WHITE if is_dark else NAVY
@@ -17,7 +18,7 @@ def generate_svg(filename, is_dark):
     accent1 = GREEN
     accent2 = CYAN
     accent3 = GOLD
-    
+
     svg = f"""<svg width="100%" height="280" viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg">
     <!-- Background -->
     <rect width="1000" height="280" fill="{bg_color}" rx="12"/>
@@ -53,16 +54,17 @@ def generate_svg(filename, is_dark):
         </g>
     </g>
 </svg>"""
-    
+
     with open(filename, "w", encoding="utf-8") as f:
         f.write(svg)
+
 
 def generate_social_preview(filename):
     # 1280x640 PNG
     width, height = 1280, 640
-    img = Image.new('RGB', (width, height), NAVY)
+    img = Image.new("RGB", (width, height), NAVY)
     draw = ImageDraw.Draw(img)
-    
+
     # Try to load a nice font, fallback to default
     try:
         # Windows standard fonts
@@ -73,36 +75,42 @@ def generate_social_preview(filename):
         title_font = ImageFont.load_default()
         subtitle_font = ImageFont.load_default()
         label_font = ImageFont.load_default()
-    
+
     # Draw label
     draw.text((100, 120), "DECISION SCIENCE × FOOTBALL", fill=CYAN, font=label_font)
-    
+
     # Draw Title
     draw.text((100, 200), "PROBABILISTIC", fill=OFF_WHITE, font=title_font)
     draw.text((100, 290), "FOOTBALL POOL", fill=OFF_WHITE, font=title_font)
     draw.text((100, 380), "OPTIMIZER", fill=OFF_WHITE, font=title_font)
-    
+
     # Draw separator
     draw.line((100, 490, 1180, 490), fill=SLATE, width=2)
-    
+
     # Draw footer pills / text
-    draw.text((100, 520), "Dixon–Coles  •  Expected Points  •  Monte Carlo", fill=GREEN, font=subtitle_font)
-    
+    draw.text(
+        (100, 520),
+        "Dixon–Coles  •  Expected Points  •  Monte Carlo",
+        fill=GREEN,
+        font=subtitle_font,
+    )
+
     # Draw some decorative abstract chart on the right
     draw.arc((800, 150, 1100, 450), start=180, end=360, fill=CYAN, width=15)
     draw.arc((800, 150, 1100, 450), start=0, end=90, fill=GREEN, width=15)
     draw.arc((800, 150, 1100, 450), start=90, end=180, fill=GOLD, width=15)
-    
+
     # Stats
     draw.text((865, 270), "100,000", fill=OFF_WHITE, font=subtitle_font)
     draw.text((870, 320), "simulations", fill=SLATE, font=label_font)
-    
+
     img.save(filename)
+
 
 if __name__ == "__main__":
     assets_dir = Path(__file__).parent.parent / "assets"
     assets_dir.mkdir(exist_ok=True)
-    
+
     generate_svg(assets_dir / "hero-light.svg", is_dark=False)
     generate_svg(assets_dir / "hero-dark.svg", is_dark=True)
     generate_social_preview(assets_dir / "social-preview.png")

@@ -20,12 +20,12 @@
     "figures/fig3_predicted_vs_actual_goals.png": "0c16199df52a04c16be139639e52f45de23c8d5c4ccc0e37cd96a6433cc4edc9",
     "figures/fig4_eligibility_funnel.png": "1a9cd2ac4a30e5775d72722b9d5d4d2954e7d8124b616cfdd9a50028ef97e229",
     "provenance/original_private_manifest.json": "4e93f633fd96fecd95edf660b48b51a8ebfccfa86caf6c9cb41a161a2f3f80ab",
-    "reports/evidence_and_eligibility.md": "fb0a9eab4124bf0f4f88c415da0a2ba0c45d85e664f379cf07190db98461b053",
+    "reports/evidence_and_eligibility.md": "95a0c80a1cb28efa4ec7812d7b1730b70d0c6df47768c29e02bdabac3b222c92",
     "reports/executive_summary.md": "8ed6f2d59714af9baad648aa004aa2b06ced766b37c91ceca32fb9524dd6780f",
     "reports/group_stage_scoring.md": "5063ef983a3c1c5a09d4750ea002d9a0c7037d855f4f1ba97dec58e95284bbd6",
-    "reports/limitations_and_threats_to_validity.md": "03d04956e3c1d466636f450bde50d33f570e1c6a90a4367a3c763b324ad83262",
+    "reports/limitations_and_threats_to_validity.md": "17796738934b117ec2c78c6b365c69142e3c25bbd5784dff01ff6c9c434e2452",
     "reports/methodology_and_scope.md": "6e2dc774dc9db1c4535ebd0cceb412dc90717e46f8497b957aeddbc0b35c1f10",
     "reports/optimization_analysis.md": "6b13ccd201d65fd10f9e621843449f1db7c09a869ee7a4b9c3d695408d9a5769",
-    "reports/reproducibility.md": "f2a0c73aa295af22012a3e16a2461e9cbcbc5fdfc55ccf7c53377e81058b098a"
+    "reports/reproducibility.md": "9be5aa550eb50b025271a3f30189860104539ae14f3e7943f9b0222db6574469"
   }
 }

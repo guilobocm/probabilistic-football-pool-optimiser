@@ -162,8 +162,7 @@ def _generate_rationale(
         )
 
     alternatives = " | ".join(
-        f"{goals_a}-{goals_b}: {ep:.3f}"
-        for (goals_a, goals_b), ep in top_picks[:3]
+        f"{goals_a}-{goals_b}: {ep:.3f}" for (goals_a, goals_b), ep in top_picks[:3]
     )
     parts.append(f"Alternatives: {alternatives}")
 

@@ -5,7 +5,8 @@ import json
 import sys
 from pathlib import Path
 
-sys.stdout.reconfigure(encoding="utf-8")  # type: ignore
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
@@ -18,9 +19,11 @@ def get_sha256(path: Path) -> str:
 
 
 def main() -> int:
-    manifest_path = PROJECT_ROOT / "postmortem" / "provenance" / "public_package_manifest.json"
+    manifest_path = (
+        PROJECT_ROOT / "postmortem" / "provenance" / "public_package_manifest.json"
+    )
     package_root = manifest_path.parent.parent
-    
+
     if not manifest_path.exists():
         print(f"Error: Manifest not found at {manifest_path.relative_to(PROJECT_ROOT)}")
         return 1
@@ -39,19 +42,25 @@ def main() -> int:
 
     errors = 0
     print("=== Verifying Public Package Manifest ===")
-    
+
     for relative_path, expected_hash in copied_artifacts.items():
-        if ".." in relative_path or relative_path.startswith("/"):
+        try:
+            file_path = (package_root / relative_path).resolve()
+            file_path.relative_to(package_root.resolve())
+        except (ValueError, RuntimeError):
             print(f"❌ INVALID PATH: {relative_path} (path traversal detected)")
             errors += 1
             continue
-            
-        if not isinstance(expected_hash, str) or len(expected_hash) != 64 or not all(c in "0123456789abcdefABCDEF" for c in expected_hash):
+
+        if (
+            not isinstance(expected_hash, str)
+            or len(expected_hash) != 64
+            or not all(c in "0123456789abcdefABCDEF" for c in expected_hash)
+        ):
             print(f"❌ INVALID HASH FORMAT: {relative_path} ({expected_hash})")
             errors += 1
             continue
 
-        file_path = package_root / relative_path
         if not file_path.is_file():
             print(f"❌ MISSING: {relative_path}")
             errors += 1

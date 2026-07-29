@@ -95,10 +95,12 @@ class TournamentSimulator:
         goals_b = rng.poisson(lambda_b)
 
         if goals_a > 0 and hasattr(self, "current_sim_player_goals"):
-            distributed_goals, distributed_assists = self.player_model.distribute_events(
-                team_a,
-                goals_a,
-                rng,
+            distributed_goals, distributed_assists = (
+                self.player_model.distribute_events(
+                    team_a,
+                    goals_a,
+                    rng,
+                )
             )
             for player, count in distributed_goals.items():
                 self.current_sim_player_goals[player] += count
@@ -106,10 +108,12 @@ class TournamentSimulator:
                 self.current_sim_player_assists[player] += count
 
         if goals_b > 0 and hasattr(self, "current_sim_player_goals"):
-            distributed_goals, distributed_assists = self.player_model.distribute_events(
-                team_b,
-                goals_b,
-                rng,
+            distributed_goals, distributed_assists = (
+                self.player_model.distribute_events(
+                    team_b,
+                    goals_b,
+                    rng,
+                )
             )
             for player, count in distributed_goals.items():
                 self.current_sim_player_goals[player] += count
@@ -140,8 +144,7 @@ class TournamentSimulator:
     ) -> list[tuple[str, int, int, int]]:
         """Simulate a four-team group and return its ordered standings."""
         standings: dict[str, dict] = {
-            team: {"pts": 0, "gf": 0, "ga": 0, "gd": 0}
-            for team in group_teams
+            team: {"pts": 0, "gf": 0, "ga": 0, "gd": 0} for team in group_teams
         }
 
         for i in range(len(group_teams)):
@@ -182,8 +185,7 @@ class TournamentSimulator:
         )
 
         return [
-            (team, data["pts"], data["gd"], data["gf"])
-            for team, data in sorted_teams
+            (team, data["pts"], data["gd"], data["gf"]) for team, data in sorted_teams
         ]
 
     def _select_best_thirds(
@@ -312,10 +314,7 @@ class TournamentSimulator:
                 )
                 r16_winners.append(winner)
 
-            qf_matches = [
-                (r16_winners[i], r16_winners[i + 1])
-                for i in range(0, 16, 2)
-            ]
+            qf_matches = [(r16_winners[i], r16_winners[i + 1]) for i in range(0, 16, 2)]
             qf_winners = []
             for team_a, team_b in qf_matches:
                 if team_a in self.audit_teams:
@@ -330,10 +329,7 @@ class TournamentSimulator:
                 )
                 qf_winners.append(winner)
 
-            sf_matches = [
-                (qf_winners[i], qf_winners[i + 1])
-                for i in range(0, 8, 2)
-            ]
+            sf_matches = [(qf_winners[i], qf_winners[i + 1]) for i in range(0, 8, 2)]
             sf_winners = []
             for team_a, team_b in sf_matches:
                 if team_a in self.audit_teams:
@@ -427,8 +423,7 @@ class TournamentSimulator:
             player: count / n for player, count in top_scorer_counts.most_common()
         }
         golden_boot_team_probs = {
-            team: count / n
-            for team, count in golden_boot_team_counts.most_common()
+            team: count / n for team, count in golden_boot_team_counts.most_common()
         }
 
         return SimulationResults(

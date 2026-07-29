@@ -36,7 +36,8 @@ from src.optimizer.pick_optimizer import PickResult, optimize_pick
 from src.optimizer.scoring_rules import ScoringRule, TOURNAMENT_RULE
 from src.simulator.tournament_sim import TournamentSimulator
 
-sys.stdout.reconfigure(encoding="utf-8")  # type: ignore
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")
 
 
 def generate_group_matches() -> list[dict]:
@@ -396,27 +397,36 @@ def file_hash(path: Path) -> str:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(description="World Cup 2026 Pool Optimiser")
     parser.add_argument("--output-dir", type=Path, help="Directory to save outputs")
-    parser.add_argument("--skip-live-ingestion", action="store_true", help="Skip fetching live odds")
-    parser.add_argument("--num-simulations", type=int, default=100000, help="Number of Monte Carlo simulations")
-    parser.add_argument("--seed", type=int, default=2026, help="Random seed for simulations")
+    parser.add_argument(
+        "--skip-live-ingestion", action="store_true", help="Skip fetching live odds"
+    )
+    parser.add_argument(
+        "--num-simulations",
+        type=int,
+        default=100000,
+        help="Number of Monte Carlo simulations",
+    )
+    parser.add_argument(
+        "--seed", type=int, default=2026, help="Random seed for simulations"
+    )
     return parser
 
 
 def main(argv: Sequence[str] | None = None) -> int:
     """Run the complete modelling and optimisation pipeline."""
     args = build_parser().parse_args(argv)
-    
+
     if args.num_simulations <= 0:
         print("Error: --num-simulations must be strictly positive.")
         return 1
 
     project_root = Path(__file__).resolve().parent.parent.parent
-    
+
     if args.output_dir:
         output_dir = args.output_dir.resolve()
     else:
         output_dir = project_root / "outputs"
-        
+
     print_banner()
     output_dir.mkdir(parents=True, exist_ok=True)
 
@@ -426,8 +436,7 @@ def main(argv: Sequence[str] | None = None) -> int:
     apply_momentum(strengths)
     rule = TOURNAMENT_RULE
     print(
-        f"   Loaded {len(groups)} groups and strength data for "
-        f"{len(strengths)} teams"
+        f"   Loaded {len(groups)} groups and strength data for {len(strengths)} teams"
     )
 
     print("\n⚽ Generating group-stage fixtures...")
@@ -483,7 +492,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     print("\n🎰 Running the tournament Monte Carlo simulation...")
     simulator = TournamentSimulator(groups, strengths)
-    simulation_results = simulator.simulate(n_simulations=args.num_simulations, seed=args.seed)
+    simulation_results = simulator.simulate(
+        n_simulations=args.num_simulations, seed=args.seed
+    )
     print(f"   Completed {simulation_results.n_simulations:,} simulations")
     simulator.print_audit_report()
 
@@ -508,9 +519,7 @@ def main(argv: Sequence[str] | None = None) -> int:
                 project_root / "data" / "raw" / "odds_input.csv"
             ),
             "players.yaml": file_hash(project_root / "data" / "players.yaml"),
-            "recent_form.csv": file_hash(
-                project_root / "data" / "recent_form.csv"
-            ),
+            "recent_form.csv": file_hash(project_root / "data" / "recent_form.csv"),
         },
         "outputs_generated": [
             "match_picks.csv",
@@ -542,7 +551,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     print(f"    📄 {output_dir / 'bonus_picks.json'}")
     print(f"    📄 {output_dir / 'simulation_summary.json'}")
     print(f"    📄 {output_dir / 'release_manifest.json'}")
-    
+
     return 0
+
+
 if __name__ == "__main__":
     raise SystemExit(main())

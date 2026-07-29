@@ -2,7 +2,7 @@
 
 ## The Audit Story (The Prospective Funnel)
 
-Validating predictions *ex post facto* is a data provenance challenge. The evaluation began by tracking the original artifacts.
+Validating predictions *ex post facto* is a data provenance challenge. The evaluation began by tracking the original artefacts.
 
 ### The Initial Census (GS-4)
 
