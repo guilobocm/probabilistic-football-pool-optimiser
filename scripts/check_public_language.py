@@ -4,7 +4,11 @@ from __future__ import annotations
 
 import re
 import sys
+import yaml
 from pathlib import Path
+
+if hasattr(sys.stdout, "reconfigure"):
+    sys.stdout.reconfigure(encoding="utf-8")  # type: ignore
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 
@@ -27,9 +31,13 @@ EXCLUDED_DIRECTORIES = {
     ".venv",
     "__pycache__",
     "node_modules",
+    "reveal",
 }
 
-EXCLUDED_FILES = {Path(__file__).resolve()}
+EXCLUDED_FILES = {
+    Path(__file__).resolve(),
+    (PROJECT_ROOT / "tests" / "test_language_gate.py").resolve(),
+}
 
 # Target Portuguese prose rather than personal names or legitimate local aliases.
 PORTUGUESE_TERMS = [
@@ -161,6 +169,22 @@ def markdown_prose_lines(text: str):
         yield line_number, prose
 
 
+def iter_yaml_prose(value, *, parent_key=None):
+    """Yield all string values and keys from a parsed YAML object except those under 'aliases'."""
+    if parent_key == "aliases":
+        return
+
+    if isinstance(value, dict):
+        for key, child in value.items():
+            yield str(key)
+            yield from iter_yaml_prose(child, parent_key=str(key))
+    elif isinstance(value, list):
+        for child in value:
+            yield from iter_yaml_prose(child, parent_key=parent_key)
+    elif isinstance(value, str):
+        yield value
+
+
 def main() -> int:
     findings: list[tuple[Path, int, str, str, str]] = []
 
@@ -170,7 +194,51 @@ def main() -> int:
         except UnicodeDecodeError:
             continue
 
+        is_yaml = path.suffix.lower() in {".yaml", ".yml"}
+        if is_yaml:
+            try:
+                parsed_yaml = yaml.safe_load(text)
+                if parsed_yaml is not None:
+                    for prose_value in iter_yaml_prose(parsed_yaml):
+                        for match in PORTUGUESE_PATTERN.finditer(prose_value):
+                            # Approximate line finding for reporting
+                            approx_line = next(
+                                (
+                                    i
+                                    for i, line in enumerate(text.splitlines(), start=1)
+                                    if prose_value in line
+                                ),
+                                0,
+                            )
+                            findings.append(
+                                (
+                                    path.relative_to(PROJECT_ROOT),
+                                    approx_line,
+                                    match.group(0),
+                                    "translate Portuguese prose (YAML structure)",
+                                    prose_value.strip(),
+                                )
+                            )
+            except yaml.YAMLError as e:
+                print(f"Error: Invalid YAML in {path.relative_to(PROJECT_ROOT)}:\n{e}")
+                return 1
+
         for line_number, line in enumerate(text.splitlines(), start=1):
+            if is_yaml:
+                comment_match = re.search(r"#.*", line)
+                if comment_match:
+                    for match in PORTUGUESE_PATTERN.finditer(comment_match.group(0)):
+                        findings.append(
+                            (
+                                path.relative_to(PROJECT_ROOT),
+                                line_number,
+                                match.group(0),
+                                "translate Portuguese prose (YAML comment)",
+                                line.strip(),
+                            )
+                        )
+                continue
+
             for match in PORTUGUESE_PATTERN.finditer(line):
                 findings.append(
                     (

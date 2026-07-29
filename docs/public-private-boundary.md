@@ -1,8 +1,8 @@
-﻿# Public / Private Boundary
+# Public / Private Boundary
 
 ## Public
 
-- Mathematical formulation of expected-points optimization
+- Mathematical formulation of expected-points optimisation
 - Generic scoring-rule interface
 - Synthetic probability models
 - Deterministic Monte Carlo simulation
@@ -20,5 +20,5 @@
 - Momentum, availability and injury adjustments
 - Market-odds ingestion and calibration logic
 - Operational extra-time and penalty heuristics
-- Official prediction artifacts before the planned reveal
+- Official prediction artefacts before the planned reveal
 - Full private evaluation and per-match diagnostics

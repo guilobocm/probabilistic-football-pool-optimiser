@@ -20,7 +20,7 @@ There is a mathematical chance, even if inadvertent (e.g., stagnant API caches),
 
 ## 2. Absence of the Complete Probabilistic Distribution
 
-The model outputted discrete picks (`pick_a`, `pick_b`), but the complete latent probabilities ($P(Win)$, $P(Draw)$, $P(Loss)$) underlying each decision were lost to oblivion, as the text-based artifact submitted by the OpenAI API exposed only the prediction. Without this per-match distribution reallocated and saved (only the "most probable prob" was saved), we cannot measure:
+The model outputted discrete picks (`pick_a`, `pick_b`), but the complete latent probabilities ($P(Win)$, $P(Draw)$, $P(Loss)$) underlying each decision were lost to oblivion, as the text-based artefact submitted by the OpenAI API exposed only the prediction. Without this per-match distribution reallocated and saved (only the "most probable prob" was saved), we cannot measure:
 - **Log Loss** (Cross-Entropy), the gold standard of stochastic classification;
 - **Ranked Probability Score (RPS)**, to capture if the model, when erring, erred closely (ordinal scale);
 - **Brier Score 1X2**.

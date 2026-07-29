@@ -1,3 +1,8 @@
+* text=auto eol=lf
+*.png binary
+*.gif binary
+
+# Existing forensic exceptions below
 reveal/world-cup-2026-pre-final/precommit_key.hex -text -whitespace
 reveal/world-cup-2026-pre-final/precommit_manifest.json -text -whitespace
 reveal/world-cup-2026-pre-final/palpites_final.md -text -whitespace
