@@ -18,6 +18,7 @@ def generate_svg(filename, is_dark):
     accent1 = GREEN
     accent2 = CYAN
     accent3 = GOLD
+    pill_text = OFF_WHITE if is_dark else NAVY
 
     svg = f"""<svg width="100%" height="280" viewBox="0 0 1000 280" xmlns="http://www.w3.org/2000/svg">
     <!-- Background -->
@@ -27,10 +28,20 @@ def generate_svg(filename, is_dark):
     <g stroke="{text_sub}" stroke-opacity="0.1" stroke-width="1">
         <line x1="0" y1="40" x2="1000" y2="40"/>
         <line x1="0" y1="240" x2="1000" y2="240"/>
-        <circle cx="900" cy="140" r="80" fill="none" stroke="{accent1}" stroke-width="2" stroke-opacity="0.2"/>
-        <circle cx="900" cy="140" r="60" fill="none" stroke="{accent2}" stroke-width="2" stroke-opacity="0.2"/>
-        <circle cx="900" cy="140" r="40" fill="none" stroke="{accent3}" stroke-width="2" stroke-opacity="0.2"/>
     </g>
+
+    <!-- Circular Chart (100,000 simulations) -->
+    <g fill="none" stroke-width="12">
+        <!-- Cyan arc (Top: 180 to 0 degrees) -->
+        <path d="M 780,140 A 70,70 0 0,1 920,140" stroke="{accent2}" />
+        <!-- Green arc (Bottom Right: 0 to 90 degrees) -->
+        <path d="M 920,140 A 70,70 0 0,1 850,210" stroke="{accent1}" />
+        <!-- Gold arc (Bottom Left: 90 to 180 degrees) -->
+        <path d="M 850,210 A 70,70 0 0,1 780,140" stroke="{accent3}" />
+    </g>
+    
+    <text x="850" y="135" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="{text_main}" text-anchor="middle">100,000</text>
+    <text x="850" y="160" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="400" fill="{text_sub}" text-anchor="middle">simulations</text>
 
     <!-- Content -->
     <g font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
@@ -43,14 +54,14 @@ def generate_svg(filename, is_dark):
         
         <!-- Tech Pills -->
         <g transform="translate(600, 215)">
-            <rect x="0" y="0" width="100" height="24" rx="12" fill="{accent1}" fill-opacity="0.1"/>
-            <text x="50" y="16" font-size="12" font-weight="600" fill="{accent1}" text-anchor="middle">Dixon–Coles</text>
+            <rect x="0" y="0" width="100" height="24" rx="12" fill="{accent1}"/>
+            <text x="50" y="16" font-size="12" font-weight="600" fill="{pill_text}" text-anchor="middle">Dixon–Coles</text>
             
-            <rect x="110" y="0" width="115" height="24" rx="12" fill="{accent3}" fill-opacity="0.1"/>
-            <text x="167.5" y="16" font-size="12" font-weight="600" fill="{accent3}" text-anchor="middle">Expected Points</text>
+            <rect x="110" y="0" width="115" height="24" rx="12" fill="{accent3}"/>
+            <text x="167.5" y="16" font-size="12" font-weight="600" fill="{pill_text}" text-anchor="middle">Expected Points</text>
             
-            <rect x="235" y="0" width="95" height="24" rx="12" fill="{accent2}" fill-opacity="0.1"/>
-            <text x="282.5" y="16" font-size="12" font-weight="600" fill="{accent2}" text-anchor="middle">Monte Carlo</text>
+            <rect x="235" y="0" width="95" height="24" rx="12" fill="{accent2}"/>
+            <text x="282.5" y="16" font-size="12" font-weight="600" fill="{pill_text}" text-anchor="middle">Monte Carlo</text>
         </g>
     </g>
 </svg>"""

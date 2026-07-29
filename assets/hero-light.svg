@@ -6,10 +6,20 @@
     <g stroke="#57606a" stroke-opacity="0.1" stroke-width="1">
         <line x1="0" y1="40" x2="1000" y2="40"/>
         <line x1="0" y1="240" x2="1000" y2="240"/>
-        <circle cx="900" cy="140" r="80" fill="none" stroke="#20C997" stroke-width="2" stroke-opacity="0.2"/>
-        <circle cx="900" cy="140" r="60" fill="none" stroke="#30C7EC" stroke-width="2" stroke-opacity="0.2"/>
-        <circle cx="900" cy="140" r="40" fill="none" stroke="#F5B942" stroke-width="2" stroke-opacity="0.2"/>
     </g>
+
+    <!-- Circular Chart (100,000 simulations) -->
+    <g fill="none" stroke-width="12">
+        <!-- Cyan arc (Top: 180 to 0 degrees) -->
+        <path d="M 780,140 A 70,70 0 0,1 920,140" stroke="#30C7EC" />
+        <!-- Green arc (Bottom Right: 0 to 90 degrees) -->
+        <path d="M 920,140 A 70,70 0 0,1 850,210" stroke="#20C997" />
+        <!-- Gold arc (Bottom Left: 90 to 180 degrees) -->
+        <path d="M 850,210 A 70,70 0 0,1 780,140" stroke="#F5B942" />
+    </g>
+    
+    <text x="850" y="135" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="28" font-weight="800" fill="#09111F" text-anchor="middle">100,000</text>
+    <text x="850" y="160" font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif" font-size="14" font-weight="400" fill="#57606a" text-anchor="middle">simulations</text>
 
     <!-- Content -->
     <g font-family="system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif">
@@ -22,14 +32,14 @@
         
         <!-- Tech Pills -->
         <g transform="translate(600, 215)">
-            <rect x="0" y="0" width="100" height="24" rx="12" fill="#20C997" fill-opacity="0.1"/>
-            <text x="50" y="16" font-size="12" font-weight="600" fill="#20C997" text-anchor="middle">Dixon–Coles</text>
+            <rect x="0" y="0" width="100" height="24" rx="12" fill="#20C997"/>
+            <text x="50" y="16" font-size="12" font-weight="600" fill="#09111F" text-anchor="middle">Dixon–Coles</text>
             
-            <rect x="110" y="0" width="115" height="24" rx="12" fill="#F5B942" fill-opacity="0.1"/>
-            <text x="167.5" y="16" font-size="12" font-weight="600" fill="#F5B942" text-anchor="middle">Expected Points</text>
+            <rect x="110" y="0" width="115" height="24" rx="12" fill="#F5B942"/>
+            <text x="167.5" y="16" font-size="12" font-weight="600" fill="#09111F" text-anchor="middle">Expected Points</text>
             
-            <rect x="235" y="0" width="95" height="24" rx="12" fill="#30C7EC" fill-opacity="0.1"/>
-            <text x="282.5" y="16" font-size="12" font-weight="600" fill="#30C7EC" text-anchor="middle">Monte Carlo</text>
+            <rect x="235" y="0" width="95" height="24" rx="12" fill="#30C7EC"/>
+            <text x="282.5" y="16" font-size="12" font-weight="600" fill="#09111F" text-anchor="middle">Monte Carlo</text>
         </g>
     </g>
 </svg>
