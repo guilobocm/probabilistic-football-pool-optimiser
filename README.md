@@ -1,40 +1,39 @@
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
-  <source media="(prefers-color-scheme: light)" srcset="assets/hero-light.svg">
-  <img alt="Probabilistic Football Pool Optimiser" src="assets/hero-light.svg">
-</picture>
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/hero-dark.svg">
+    <source media="(prefers-color-scheme: light)" srcset="assets/hero-light.svg">
+    <img alt="Probabilistic Football Pool Optimiser" src="assets/hero-light.svg">
+  </picture>
+</p>
 
-> A reproducible decision-science system that combines football probability models, tournament simulation and scoring-rule optimisation to choose the highest-value pool predictions.
+# Probabilistic Football Pool Optimiser
 
-<br>
-
-| Simulations | 1X2 Accuracy | EP Uplift | Corroborated Outputs |
-|:---:|:---:|:---:|:---:|
-| **100,000** | **60.6%** | **+10 pts** | **75** |
-*Note: Tier B postmortem results. Optimisation uplift was directional but statistically inconclusive.*
+> **A reproducible decision-science system that combines football probability models, tournament simulation and scoring-rule optimisation to choose the highest-value pool predictions.**
 
 <p align="center">
-  <a href="#4-results"><b>View the Results</b></a> &nbsp;&bull;&nbsp;
-  <a href="#6-quick-start"><b>Run the Optimiser</b></a> &nbsp;&bull;&nbsp;
+  <a href="#-evidence--results"><b>View the Results</b></a> &nbsp;&bull;&nbsp;
+  <a href="#-getting-started"><b>Run the Optimiser</b></a> &nbsp;&bull;&nbsp;
   <a href="postmortem/README.md"><b>Read the Postmortem</b></a>
 </p>
 
 ---
 
-## 1. The Decision Problem
+## 🎯 The Decision Problem
 
 The most probable scoreline is not always the best pool pick. Different scoring rules reward different decisions, so this project maximises **expected points (EP)** rather than blindly selecting the modal outcome. 
 
 When a pool assigns asymmetric payoffs to exact scores versus simple outcome predictions (1X2), betting strictly on the most likely outcome can leave points on the table.
 
-## 2. What Makes It Different
+## 🏗️ Architecture & System
 
-* **Probability model:** Dixon–Coles-adjusted score matrices.
-* **Decision layer:** Expected-points optimisation under custom scoring rules.
-* **Tournament layer:** Deterministic 100,000-run Monte Carlo simulation.
-* **Audit layer:** Prospective evidence classification and post-tournament scoring.
+This project is divided into four distinct conceptual layers:
 
-## 3. Visual Walkthrough
+* **Probability Engine:** Dixon–Coles-adjusted score matrices.
+* **Decision Engine:** Expected-points optimisation under custom scoring rules.
+* **Tournament Engine:** Deterministic 100,000-run Monte Carlo simulation.
+* **Audit Layer:** Prospective evidence classification and post-tournament scoring.
+
+### Visual Walkthrough
 
 ```text
 MARKET + FORM
@@ -52,7 +51,13 @@ AUDIT & POSTMORTEM
 Evidence tiers + realised performance
 ```
 
-## 4. Results
+## 📈 Evidence & Results
+
+*Note: Tier B postmortem results. Optimisation uplift was directional but statistically inconclusive.*
+
+| Simulations | 1X2 Accuracy | EP Uplift | Corroborated Outputs |
+|:---:|:---:|:---:|:---:|
+| **100,000** | **60.6%** | **+10 pts** | **75** |
 
 | Question | Observed result | Interpretation |
 |---|---:|---|
@@ -63,13 +68,19 @@ Evidence tiers + realised performance
 
 > *These results evaluate prospectively corroborated outputs, not a fully verified historical pipeline.*
 
-## 5. Interactive Demo
+### Interactive Demo
 
 ![Demo](assets/demo.gif)
 
-## 6. Quick Start
+---
 
-Ensure you have [uv](https://github.com/astral-sh/uv) installed, then run:
+## 🚀 Getting Started
+
+### Prerequisites
+* [uv](https://github.com/astral-sh/uv) installed
+* Python 3.10+
+
+### Installation & Usage
 
 ```bash
 git clone https://github.com/guilobocm/probabilistic-football-pool-optimiser.git
@@ -78,19 +89,20 @@ uv sync --locked
 uv run python -m src.pipeline.run_all
 ```
 
-## 7. Explore the Outputs
+### Explore the Outputs
 
 The pipeline generates three files in `outputs/`:
-
 1. **`match_picks.csv`**: The optimal picks for every group stage match under the chosen scoring rule.
 2. **`simulation_summary.json`**: Probabilities for teams advancing, reaching the semi-finals, or winning the tournament.
 3. **`bonus_picks.json`**: The highest EP answers for common tournament-wide bonus questions.
 
-## 8. Engineering Quality
+---
+
+## 🛠️ Engineering Practices
 
 - [x] Deterministic simulation
 - [x] Fixed random seed
-- [x] Locked dependencies
+- [x] Locked dependencies (via `uv`)
 - [x] Unit and end-to-end smoke tests
 - [x] Public schema validation
 - [x] Sanitised static postmortem
@@ -101,10 +113,11 @@ To run the full suite of validations (lint, formatting, type checking, tests, de
 # Requires a Bash environment (Git Bash, WSL, Linux, or macOS)
 bash scripts/validate.sh
 ```
+*(Note for Windows users: If you are using PowerShell, `validate.sh` will not run natively. You can either use Git Bash/WSL, or run the steps manually e.g., `uv run pytest`, `uv run ruff check .`)*
 
-> **Note for Windows users:** If you are using PowerShell, `validate.sh` will not run natively. You can either use Git Bash/WSL, or run the steps manually as defined in the script (e.g., `uv run pytest`, `uv run ruff check .`, etc.).
+---
 
-## 9. Forensic Postmortem
+## 🔍 Forensic Postmortem
 
 **The model was not simply evaluated. Its predictions were forensically audited.**
 
@@ -115,24 +128,9 @@ We classify the evidence for every prediction into strict tiers before scoring i
 
 Read the full investigation in the [Postmortem Package](postmortem/README.md).
 
-## 10. Limitations
-
+### Limitations
 * No full historical input verification.
 * No complete probability vectors in the verified output.
 * Limited Tier B sample size.
 * Static public postmortem package.
 * No claim of generalisation to future tournaments.
-
-## 11. Project Structure
-
-```text
-.
-├── assets/                  # Visual assets for documentation
-├── config/                  # Pipeline and scoring configuration
-├── data/                    # Historical and tournament data
-├── outputs/                 # Sample model outputs
-├── postmortem/              # Static reports and forensic audit
-├── scripts/                 # Utility scripts
-├── src/                     # Core optimisation and simulation logic
-└── tests/                   # Smoke tests and schema validation
-```
